@@ -1,0 +1,58 @@
+module QueryOwl
+  module EventStore
+    class << self
+      def push(event)
+        mutex.synchronize do
+          ensure_buffer_size
+          buffer[@write_pos] = event.merge(recorded_at: Time.now)
+          @write_pos = (@write_pos + 1) % capacity
+          @stored    = [@stored + 1, capacity].min
+        end
+      end
+
+      def all
+        mutex.synchronize do
+          return [] if @stored.zero?
+
+          if @stored < capacity
+            buffer.first(@stored)
+          else
+            buffer[@write_pos..] + buffer[0...@write_pos]
+          end
+        end
+      end
+
+      def clear
+        mutex.synchronize { reset! }
+      end
+
+      def size
+        mutex.synchronize { @stored }
+      end
+
+      private
+
+      def mutex
+        @mutex ||= Mutex.new
+      end
+
+      def capacity
+        QueryOwl.config.event_store_size
+      end
+
+      def ensure_buffer_size
+        reset! if buffer.size != capacity
+      end
+
+      def buffer
+        @buffer ||= Array.new(capacity)
+      end
+
+      def reset!
+        @buffer    = Array.new(capacity)
+        @write_pos = 0
+        @stored    = 0
+      end
+    end
+  end
+end
