@@ -1,9 +1,5 @@
 # ROADMAP
 
-## 0.2.0 — UX Polish
-
-
----
 
 ## 0.3.0 — Slow Queries Dashboard
 
