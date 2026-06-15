@@ -15,7 +15,8 @@ module QueryOwl
         queries << {
           sql: event.payload[:sql],
           duration_ms: event.duration.round(2),
-          cached: event.payload[:cached]
+          cached: event.payload[:cached],
+          backtrace: filtered_backtrace
         }
       end
 
@@ -31,6 +32,12 @@ module QueryOwl
 
       def tracking?
         !Thread.current[:query_owl_queries].nil?
+      end
+
+      private
+
+      def filtered_backtrace
+        caller.grep_v(%r{/gems/|/rubygems/|/ruby/gems/|lib/query_owl/}).first(5)
       end
     end
   end
