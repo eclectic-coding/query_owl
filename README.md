@@ -8,12 +8,29 @@
 
 A leaner alternative to Bullet. QueryOwl detects N+1 queries and slow queries in development, logging structured warnings to your Rails logger — without the noise.
 
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Log Output](#log-output)
+- [Manual Testing in the Dummy App](#manual-testing-in-the-dummy-app)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
 ## Features
 
 - **N+1 detection** — flags when the same SQL pattern fires 2+ times in a single request
 - **Slow query detection** — flags queries exceeding a configurable threshold (default: 100ms)
 - **Structured log output** — JSON-style warnings via `Rails.logger` with SQL, duration, count, and filtered backtrace
 - **Zero overhead in production** — auto-enabled in development only
+
+[↑ Back to top](#table-of-contents)
+
+---
 
 ## Installation
 
@@ -29,6 +46,10 @@ Then run:
 bundle install
 ```
 
+[↑ Back to top](#table-of-contents)
+
+---
+
 ## Configuration
 
 Create an initializer:
@@ -36,12 +57,16 @@ Create an initializer:
 ```ruby
 # config/initializers/query_owl.rb
 QueryOwl.configure do |config|
-  config.enabled                = Rails.env.development?
+  config.enabled                 = Rails.env.development?
   config.slow_query_threshold_ms = 100   # flag queries slower than this
-  config.n_plus_one_threshold   = 2      # flag after this many repeated patterns
-  config.log_level              = :warn  # :warn | :info | :debug
+  config.n_plus_one_threshold    = 2     # flag after this many repeated patterns
+  config.log_level               = :warn # :warn | :info | :debug
 end
 ```
+
+[↑ Back to top](#table-of-contents)
+
+---
 
 ## Log Output
 
@@ -52,9 +77,9 @@ When a problem is detected, QueryOwl writes a structured line to `Rails.logger`:
 [QueryOwl] {"type":"slow_query","sql":"SELECT * FROM reports WHERE ...","duration_ms":340}
 ```
 
-## Roadmap
+[↑ Back to top](#table-of-contents)
 
-See [ROADMAP.md](ROADMAP.md) for planned releases, including unused eager load detection (0.2.0) and a `/rails/slow_queries` dashboard endpoint (0.3.0).
+---
 
 ## Manual Testing in the Dummy App
 
@@ -70,30 +95,37 @@ RAILS_ENV=development bin/rails console
 **Trigger N+1 detection:**
 
 ```ruby
-# Enable the gem (development is on by default, but make sure)
 QueryOwl.config.enabled = true
-
-# Simulate a request — start the tracker, fire repeated queries, stop and log
 QueryOwl::QueryTracker.start!
-3.times { |i| Widget.find(i + 1) rescue nil }
+Widget.all.each { |w| Widget.find(w.id) }
 queries = QueryOwl::QueryTracker.stop!
-events  = QueryOwl::Detector.detect_n_plus_one(queries) +
-          QueryOwl::Detector.detect_slow_queries(queries)
+events  = QueryOwl::Detector.detect_n_plus_one(queries)
 QueryOwl::Logger.log_events(events)
-# => logs: [QueryOwl] {"type":"n_plus_one","sql":"SELECT ...","count":3,...}
+# => [QueryOwl] {"type":"n_plus_one","sql":"SELECT ...","count":3,...}
 ```
 
 **Trigger slow query detection:**
 
 ```ruby
 QueryOwl.config.slow_query_threshold_ms = 0  # flag everything
-
 QueryOwl::QueryTracker.start!
 Widget.all.to_a
 queries = QueryOwl::QueryTracker.stop!
 events  = QueryOwl::Detector.detect_slow_queries(queries)
 QueryOwl::Logger.log_events(events)
-# => logs: [QueryOwl] {"type":"slow_query","sql":"SELECT ...","duration_ms":...}
+# => [QueryOwl] {"type":"slow_query","sql":"SELECT ...","duration_ms":...}
+```
+
+**Full pipeline** (as it runs on every real HTTP request):
+
+```ruby
+QueryOwl.config.slow_query_threshold_ms = 0
+QueryOwl::QueryTracker.start!
+Widget.all.each { |w| Widget.find(w.id) }
+queries = QueryOwl::QueryTracker.stop!
+events  = QueryOwl::Detector.detect_n_plus_one(queries) +
+          QueryOwl::Detector.detect_slow_queries(queries)
+QueryOwl::Logger.log_events(events)
 ```
 
 **Seed the dummy database first** (if needed):
@@ -104,12 +136,30 @@ RAILS_ENV=development bin/rails db:migrate
 RAILS_ENV=development bin/rails runner "3.times { |i| Widget.create!(name: \"Widget #{i}\") }"
 ```
 
+[↑ Back to top](#table-of-contents)
+
+---
+
+## Roadmap
+
+See [ROADMAP.md](ROADMAP.md) for planned releases, including unused eager load detection (0.2.0) and a `/rails/slow_queries` dashboard endpoint (0.3.0).
+
+[↑ Back to top](#table-of-contents)
+
+---
+
 ## Contributing
 
 1. Fork the repo and create a `feat/<name>` branch
 2. Write specs for your change
 3. Run `bundle exec rake` (lint + audit + tests) before opening a PR
 
+[↑ Back to top](#table-of-contents)
+
+---
+
 ## License
 
 MIT — see [MIT-LICENSE](MIT-LICENSE).
+
+[↑ Back to top](#table-of-contents)
