@@ -14,6 +14,7 @@ A leaner alternative to Bullet. QueryOwl detects N+1 queries, slow queries, and 
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Log Output](#log-output)
+- [Dashboard Endpoint](#dashboard-endpoint)
 - [Manual Testing in the Dummy App](#manual-testing-in-the-dummy-app)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
@@ -83,6 +84,42 @@ When a problem is detected, QueryOwl writes a structured line to `Rails.logger`:
 [QueryOwl] {"type":"slow_query","sql":"SELECT * FROM reports WHERE ...","duration_ms":340}
 [QueryOwl] {"type":"unused_eager_load","model":"Widget","association":"tags"}
 [QueryOwl] Request complete — 10 N+1s, 1 slow query, 1 unused eager load
+```
+
+[↑ Back to top](#table-of-contents)
+
+---
+
+## Dashboard Endpoint
+
+Mount the engine in your host app's routes to enable the JSON endpoint:
+
+```ruby
+# config/routes.rb
+mount QueryOwl::Engine => "/rails"
+```
+
+Then query detected events at `GET /rails/slow_queries`:
+
+```
+GET /rails/slow_queries
+GET /rails/slow_queries?type=n_plus_one
+GET /rails/slow_queries?type=slow_query
+GET /rails/slow_queries?type=unused_eager_load
+```
+
+Response is a JSON array of event objects, oldest first, up to `config.event_store_size` entries:
+
+```json
+[
+  {
+    "type": "n_plus_one",
+    "sql": "SELECT * FROM posts WHERE user_id = ?",
+    "count": 5,
+    "backtrace": ["app/controllers/posts_controller.rb:12"],
+    "recorded_at": "2026-06-15T18:00:00.000Z"
+  }
+]
 ```
 
 [↑ Back to top](#table-of-contents)

@@ -3,8 +3,6 @@
 
 ## 0.3.0 — Slow Queries Dashboard
 
-- `GET /rails/slow_queries` JSON endpoint — paginated, filterable by type / controller / action / time window
-- Mount the engine at `/rails` in the host app: `mount QueryOwl::Engine => "/rails"`
 - Optional minimal HTML view (no Tailwind, no asset pipeline dependency)
 
 ---
