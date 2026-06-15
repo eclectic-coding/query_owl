@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `EventStore` — thread-safe fixed-size ring buffer that retains the last N detected events across requests; configurable via `config.event_store_size` (default: `100`); each stored event receives a `:recorded_at` timestamp; oldest events are dropped when the buffer is full
 - `GET /slow_queries` JSON endpoint — returns all events from the ring buffer as a JSON array; supports `?type=`, `?controller=`, and `?action=` query params for filtering; mount the engine to enable: `mount QueryOwl::Engine => "/rails"` in your host app's routes
+- HTML dashboard view at `GET /slow_queries` — tabular display of detected events (newest first) with type badges, SQL, duration/count, timestamp, and backtrace; toggled via `config.dashboard_enabled` (default: `true` in development); CSS served via modular partials inlined at render time with no asset pipeline dependency
 
 ## [0.2.0] - 2026-06-15
 

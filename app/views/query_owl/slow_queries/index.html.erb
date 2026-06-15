@@ -1,0 +1,34 @@
+<div class="qo-header">
+  <h1>QueryOwl</h1>
+  <p>Last <%= @events.length %> detected event<%= "s" unless @events.length == 1 %> (newest first)</p>
+</div>
+
+<% if @events.empty? %>
+  <p class="qo-empty">No events detected yet.</p>
+<% else %>
+  <table class="qo-table">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>SQL / Details</th>
+        <th>Info</th>
+        <th>Recorded At</th>
+        <th>Backtrace</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @events.each do |event| %>
+        <tr>
+          <td><span class="qo-badge qo-badge--<%= event[:type] %>"><%= event[:type].to_s.tr("_", " ") %></span></td>
+          <td class="qo-monospace"><%= event[:sql] || "#{event[:model]}##{event[:association]}" %></td>
+          <td class="qo-muted">
+            <% if event[:count] %>count: <%= event[:count] %><% end %>
+            <% if event[:duration_ms] %><%= event[:duration_ms] %>ms<% end %>
+          </td>
+          <td class="qo-muted"><%= event[:recorded_at]&.strftime("%H:%M:%S") %></td>
+          <td class="qo-monospace qo-muted"><%= Array(event[:backtrace]).first %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

@@ -1,0 +1,29 @@
+.qo-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.qo-table th {
+  text-align: left;
+  padding: 0.6rem 1rem;
+  background: #f0f0f0;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.qo-table td {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+.qo-table tr:last-child td { border-bottom: none; }
+.qo-table tr:hover td      { background: #fafafa; }

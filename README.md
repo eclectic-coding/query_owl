@@ -68,6 +68,8 @@ QueryOwl.configure do |config|
   config.backtrace_lines         = 5     # number of backtrace frames to capture
   config.backtrace_filter        = ->(line) { line.start_with?("app/") } # optional custom filter
   config.raise_on_n_plus_one     = false # set true in CI to raise instead of log
+  config.event_store_size        = 100   # ring buffer capacity
+  config.dashboard_enabled       = Rails.env.development? # HTML view on/off
 end
 ```
 
@@ -99,16 +101,19 @@ Mount the engine in your host app's routes to enable the JSON endpoint:
 mount QueryOwl::Engine => "/rails"
 ```
 
-Then query detected events at `GET /rails/slow_queries`:
+Then browse the HTML dashboard or query JSON at `GET /rails/slow_queries`:
 
 ```
-GET /rails/slow_queries
+GET /rails/slow_queries              # HTML dashboard (browser)
+GET /rails/slow_queries.json         # JSON array
 GET /rails/slow_queries?type=n_plus_one
 GET /rails/slow_queries?type=slow_query
 GET /rails/slow_queries?type=unused_eager_load
 ```
 
-Response is a JSON array of event objects, oldest first, up to `config.event_store_size` entries:
+The HTML view is enabled when `config.dashboard_enabled` is `true` (default in development); returns `403` otherwise. The JSON endpoint is always available.
+
+The JSON response is an array of event objects, newest first, up to `config.event_store_size` entries:
 
 ```json
 [
