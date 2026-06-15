@@ -26,6 +26,7 @@ module QueryOwl
       Logger.log_events(events)
       Logger.log_summary(events)
       events.each { |e| EventStore.push(e) }
+      FileLogger.append(events)
       raise_on_n_plus_one!(events) if QueryOwl.config.raise_on_n_plus_one
     end
   end

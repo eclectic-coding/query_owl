@@ -28,6 +28,12 @@ RSpec.describe QueryOwl::Middleware do
       middleware.call(env)
     end
 
+    it "appends events to the file logger after the request" do
+      allow(QueryOwl::QueryTracker).to receive(:stop!).and_return([])
+      expect(QueryOwl::FileLogger).to receive(:append).with([])
+      middleware.call(env)
+    end
+
     it "still stops the tracker if the inner app raises" do
       raising_app = ->(_env) { raise "boom" }
       m = described_class.new(raising_app)

@@ -26,7 +26,7 @@ RSpec.describe QueryOwl::Generators::InstallGenerator do
     %w[
       enabled n_plus_one_threshold slow_query_threshold_ms
       log_level backtrace_lines backtrace_filter
-      raise_on_n_plus_one event_store_size dashboard_enabled
+      raise_on_n_plus_one event_store_size dashboard_enabled log_file
     ].each do |option|
       expect(content).to include("config.#{option}")
     end

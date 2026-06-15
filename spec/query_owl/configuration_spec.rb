@@ -10,6 +10,7 @@ RSpec.describe QueryOwl::Configuration do
     it { expect(config.backtrace_lines).to eq(5) }
     it { expect(config.backtrace_filter).to respond_to(:call) }
     it { expect(config.raise_on_n_plus_one).to be(false) }
+    it { expect(config.log_file).to be_nil }
 
     it "enables in development" do
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("development"))
