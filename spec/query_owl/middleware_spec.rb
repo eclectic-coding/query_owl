@@ -1,0 +1,49 @@
+require "rails_helper"
+
+RSpec.describe QueryOwl::Middleware do
+  let(:inner_app) { ->(_env) { [200, {}, ["OK"]] } }
+  let(:middleware) { described_class.new(inner_app) }
+  let(:env) { Rack::MockRequest.env_for("/") }
+
+  after { QueryOwl.reset_config! }
+
+  context "when enabled" do
+    before { QueryOwl.config.enabled = true }
+
+    it "calls the inner app and returns its response" do
+      status, _, body = middleware.call(env)
+      expect(status).to eq(200)
+      expect(body).to eq(["OK"])
+    end
+
+    it "starts and stops the query tracker around the request" do
+      expect(QueryOwl::QueryTracker).to receive(:start!).ordered
+      expect(QueryOwl::QueryTracker).to receive(:stop!).ordered.and_return([])
+      middleware.call(env)
+    end
+
+    it "runs detection and logging after the request" do
+      allow(QueryOwl::QueryTracker).to receive(:stop!).and_return([])
+      expect(QueryOwl::Logger).to receive(:log_events).with([])
+      middleware.call(env)
+    end
+
+    it "still stops the tracker if the inner app raises" do
+      raising_app = ->(_env) { raise "boom" }
+      m = described_class.new(raising_app)
+      expect(QueryOwl::QueryTracker).to receive(:start!).ordered
+      expect(QueryOwl::QueryTracker).to receive(:stop!).ordered.and_return([])
+      expect { m.call(env) }.to raise_error("boom")
+    end
+  end
+
+  context "when disabled" do
+    before { QueryOwl.config.enabled = false }
+
+    it "passes through without tracking" do
+      expect(QueryOwl::QueryTracker).not_to receive(:start!)
+      status, _, _ = middleware.call(env)
+      expect(status).to eq(200)
+    end
+  end
+end

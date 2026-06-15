@@ -3,6 +3,7 @@ require "query_owl/configuration"
 require "query_owl/query_tracker"
 require "query_owl/detector"
 require "query_owl/logger"
+require "query_owl/middleware"
 require "query_owl/engine"
 
 module QueryOwl
