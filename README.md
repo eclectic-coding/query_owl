@@ -62,6 +62,8 @@ QueryOwl.configure do |config|
   config.slow_query_threshold_ms = 100   # flag queries slower than this
   config.n_plus_one_threshold    = 2     # flag after this many repeated patterns
   config.log_level               = :warn # :warn | :info | :debug
+  config.backtrace_lines         = 5     # number of backtrace frames to capture
+  config.backtrace_filter        = ->(line) { line.start_with?("app/") } # optional custom filter
 end
 ```
 
