@@ -1,15 +1,18 @@
 module QueryOwl
   class Configuration
     VALID_LOG_LEVELS = %i[debug info warn].freeze
+    DEFAULT_BACKTRACE_FILTER = ->(line) { line !~ %r{/gems/|/rubygems/|/ruby/gems/|lib/query_owl/} }
 
-    attr_reader :log_level
-    attr_accessor :enabled, :slow_query_threshold_ms, :n_plus_one_threshold
+    attr_reader :log_level, :backtrace_filter
+    attr_accessor :enabled, :slow_query_threshold_ms, :n_plus_one_threshold, :backtrace_lines
 
     def initialize
-      @enabled                = Rails.env.development?
+      @enabled                 = Rails.env.development?
       @slow_query_threshold_ms = 100
-      @n_plus_one_threshold   = 2
-      @log_level              = :warn
+      @n_plus_one_threshold    = 2
+      @log_level               = :warn
+      @backtrace_lines         = 5
+      @backtrace_filter        = DEFAULT_BACKTRACE_FILTER
     end
 
     def log_level=(level)
@@ -18,6 +21,12 @@ module QueryOwl
       end
 
       @log_level = level
+    end
+
+    def backtrace_filter=(filter)
+      raise ArgumentError, "backtrace_filter must respond to #call" unless filter.respond_to?(:call)
+
+      @backtrace_filter = filter
     end
   end
 end

@@ -93,4 +93,40 @@ RSpec.describe QueryOwl::QueryTracker do
       expect(described_class.tracking?).to be(true)
     end
   end
+
+  describe "backtrace filtering" do
+    def record_query
+      described_class.record(
+        ActiveSupport::Notifications::Event.new(
+          "sql.active_record",
+          Time.now,
+          Time.now + 0.005,
+          SecureRandom.hex,
+          { sql: "SELECT 1", name: "Test", cached: false }
+        )
+      )
+    end
+
+    after { QueryOwl.reset_config! }
+
+    it "limits backtrace to backtrace_lines" do
+      QueryOwl.config.backtrace_lines = 1
+      QueryOwl.config.backtrace_filter = ->(_) { true }
+      record_query
+      expect(described_class.queries.first[:backtrace].length).to be <= 1
+    end
+
+    it "applies a custom backtrace_filter proc" do
+      QueryOwl.config.backtrace_filter = ->(line) { line.include?("query_tracker_spec") }
+      record_query
+      backtrace = described_class.queries.first[:backtrace]
+      expect(backtrace).to all(include("query_tracker_spec"))
+    end
+
+    it "uses the default filter when none is set" do
+      record_query
+      backtrace = described_class.queries.first[:backtrace]
+      expect(backtrace).not_to include(match(%r{/gems/|lib/query_owl/}))
+    end
+  end
 end
