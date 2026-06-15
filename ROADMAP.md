@@ -4,7 +4,6 @@
 
 ## 0.4.0 — Persistence & Notifications
 
-- File-based persistence: append structured JSON lines to a configurable log file path
 - Request context on every event: controller name, action, request path (via middleware)
 - Custom notifier API: `QueryOwl.config.notifiers << MyNotifier` (duck-typed, receives event hash)
 - Built-in `$stdout` notifier for non-request contexts (background jobs, Rake tasks)

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `rails generate query_owl:install` — generates a `config/initializers/query_owl.rb` with all nine configuration options documented and commented out by default
+- `log_file` config option — when set to a file path, appends one JSON line per detected event to that file on every request; disabled by default (`nil`); useful for persisting events across server restarts
 
 ## [0.3.0] - 2026-06-15
 
