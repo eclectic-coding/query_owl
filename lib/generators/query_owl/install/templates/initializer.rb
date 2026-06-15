@@ -29,4 +29,8 @@ QueryOwl.configure do |config|
   # Enable the HTML dashboard at GET /slow_queries (when the engine is mounted).
   # Defaults to true in development, false elsewhere.
   # config.dashboard_enabled = Rails.env.development?
+
+  # Append each detected event as a JSON line to this file path.
+  # Disabled by default (nil). Useful for persistence across restarts.
+  # config.log_file = Rails.root.join("log/query_owl.log").to_s
 end

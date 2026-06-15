@@ -5,6 +5,7 @@ require "query_owl/eager_load_tracker"
 require "query_owl/event_store"
 require "query_owl/detector"
 require "query_owl/logger"
+require "query_owl/file_logger"
 require "query_owl/middleware"
 require "query_owl/engine"
 
