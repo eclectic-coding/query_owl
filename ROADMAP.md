@@ -2,7 +2,6 @@
 
 ## 0.2.0 — UX Polish
 
-- Improved SQL normalization to better group parameterized queries across different bind values
 
 ---
 
