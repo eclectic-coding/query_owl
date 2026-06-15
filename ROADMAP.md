@@ -1,19 +1,5 @@
 # ROADMAP
 
-## 0.1.0 — Core Detection & Logging
-
-Goal: install the gem, drop one line in an initializer, and immediately see structured warnings in development logs. No database, no UI.
-
-- **Structured log output** — emit JSON-style warning lines via `Rails.logger.warn` containing:
-  - `type` (`n_plus_one` | `slow_query`)
-  - `sql` (normalized, no interpolated values)
-  - `duration_ms` (for slow queries)
-  - `count` (for N+1, how many times the pattern fired)
-  - `backtrace` (filtered to app code only)
-- Auto-enabled in development only; no overhead in production or test
-
----
-
 ## 0.2.0 — Unused Eager Load Detection & UX Polish
 
 - Detect `includes`/`eager_load` calls that load associations never accessed during the request
@@ -39,6 +25,7 @@ Goal: install the gem, drop one line in an initializer, and immediately see stru
 - Request context on every event: controller name, action, request path (via middleware)
 - Custom notifier API: `QueryOwl.config.notifiers << MyNotifier` (duck-typed, receives event hash)
 - Built-in `$stdout` notifier for non-request contexts (background jobs, Rake tasks)
+- Built-in `QueryOwl::Notifiers::Console` — TTY-aware colorized output written directly to `$stdout`, keeping `Rails.logger` / log files free of ANSI escape codes
 
 ---
 
