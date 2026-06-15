@@ -42,7 +42,7 @@ module QueryOwl
       end
 
       def ensure_buffer_size
-        reset! if buffer.size != capacity
+        reset! if @write_pos.nil? || @buffer.nil? || @buffer.size != capacity
       end
 
       def buffer
