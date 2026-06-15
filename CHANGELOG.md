@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.2.0] - 2026-06-15
-
 ### Added
 - Unused eager load detection — tracks associations preloaded via `includes`/`eager_load` and flags any not accessed in user code during the request; emits `:unused_eager_load` JSON events via `Rails.logger`
 - `EagerLoadTracker` — thread-local tracker that records preloaded associations (via `Preloader#initialize` prepend) and user-code accesses (via `ActiveRecord::Base#association` prepend); guards against Rails' internal association wiring being counted as access by wrapping `Preloader#call`
@@ -22,6 +20,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Slow query detector — flags individual queries whose duration meets or exceeds `slow_query_threshold_ms` (default: 100ms)
 - Structured logger — emits `[QueryOwl] {JSON}` warning lines via `Rails.logger` at the configured log level; `QueryOwl::Middleware` wires tracker → detector → logger on every request
 
-[Unreleased]: https://github.com/eclectic-coding/query_owl/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/eclectic-coding/query_owl/compare/v0.1.0...v0.2.0
+[Unreleased]: https://github.com/eclectic-coding/query_owl/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.1.0
