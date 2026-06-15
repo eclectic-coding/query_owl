@@ -1,6 +1,19 @@
 require "query_owl/version"
+require "query_owl/configuration"
 require "query_owl/engine"
 
 module QueryOwl
-  # Your code goes here...
+  class << self
+    def configure
+      yield config
+    end
+
+    def config
+      @config ||= Configuration.new
+    end
+
+    def reset_config!
+      @config = Configuration.new
+    end
+  end
 end
