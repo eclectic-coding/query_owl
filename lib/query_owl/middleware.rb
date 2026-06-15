@@ -18,11 +18,16 @@ module QueryOwl
       EagerLoadTracker.start!
       @app.call(env)
     ensure
-      queries     = QueryTracker.stop!
-      eager_data  = EagerLoadTracker.stop!
-      events      = Detector.detect_n_plus_one(queries) +
+      params  = env["action_dispatch.request.path_parameters"] || {}
+      RequestContext.set(controller: params[:controller], action: params[:action], path: env["PATH_INFO"])
+      queries    = QueryTracker.stop!
+      eager_data = EagerLoadTracker.stop!
+      context    = RequestContext.current
+      RequestContext.clear
+      events     = (Detector.detect_n_plus_one(queries) +
                     Detector.detect_slow_queries(queries) +
-                    Detector.detect_unused_eager_loads(eager_data)
+                    Detector.detect_unused_eager_loads(eager_data))
+                   .map { |e| e.merge(context) }
       Logger.log_events(events)
       Logger.log_summary(events)
       events.each { |e| EventStore.push(e) }
