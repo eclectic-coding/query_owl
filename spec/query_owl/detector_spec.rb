@@ -113,6 +113,54 @@ RSpec.describe QueryOwl::Detector do
     end
   end
 
+  describe ".detect_unused_eager_loads" do
+    def eager_data(preloaded:, accessed:)
+      { preloaded: preloaded, accessed: Set.new(accessed) }
+    end
+
+    it "flags an association that was preloaded but never accessed" do
+      data = eager_data(
+        preloaded: [{ model: "Widget", association: "tags" }],
+        accessed: []
+      )
+      results = described_class.detect_unused_eager_loads(data)
+      expect(results.length).to eq(1)
+      expect(results.first[:type]).to eq(:unused_eager_load)
+      expect(results.first[:model]).to eq("Widget")
+      expect(results.first[:association]).to eq("tags")
+    end
+
+    it "does not flag an association that was preloaded and accessed" do
+      data = eager_data(
+        preloaded: [{ model: "Widget", association: "tags" }],
+        accessed: ["Widget#tags"]
+      )
+      results = described_class.detect_unused_eager_loads(data)
+      expect(results).to be_empty
+    end
+
+    it "returns empty when nothing was preloaded" do
+      data = eager_data(preloaded: [], accessed: [])
+      expect(described_class.detect_unused_eager_loads(data)).to be_empty
+    end
+
+    it "deduplicates preloaded entries before comparing" do
+      data = eager_data(
+        preloaded: [
+          { model: "Widget", association: "tags" },
+          { model: "Widget", association: "tags" }
+        ],
+        accessed: []
+      )
+      results = described_class.detect_unused_eager_loads(data)
+      expect(results.length).to eq(1)
+    end
+
+    it "handles missing keys gracefully" do
+      expect(described_class.detect_unused_eager_loads({})).to be_empty
+    end
+  end
+
   describe ".normalize" do
     it "replaces numeric literals with ?" do
       expect(described_class.normalize("SELECT * FROM users WHERE id = 42"))

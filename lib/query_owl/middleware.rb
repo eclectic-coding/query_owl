@@ -8,10 +8,14 @@ module QueryOwl
       return @app.call(env) unless QueryOwl.config.enabled
 
       QueryTracker.start!
+      EagerLoadTracker.start!
       @app.call(env)
     ensure
-      queries = QueryTracker.stop!
-      events  = Detector.detect_n_plus_one(queries) + Detector.detect_slow_queries(queries)
+      queries     = QueryTracker.stop!
+      eager_data  = EagerLoadTracker.stop!
+      events      = Detector.detect_n_plus_one(queries) +
+                    Detector.detect_slow_queries(queries) +
+                    Detector.detect_unused_eager_loads(eager_data)
       Logger.log_events(events)
     end
   end
