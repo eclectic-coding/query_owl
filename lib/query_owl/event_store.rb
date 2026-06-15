@@ -12,10 +12,11 @@ module QueryOwl
 
       def all
         mutex.synchronize do
-          return [] if @stored.zero?
+          stored = @stored || 0
+          return [] if stored.zero?
 
-          if @stored < capacity
-            buffer.first(@stored)
+          if stored < capacity
+            buffer.first(stored)
           else
             buffer[@write_pos..] + buffer[0...@write_pos]
           end
@@ -27,7 +28,7 @@ module QueryOwl
       end
 
       def size
-        mutex.synchronize { @stored }
+        mutex.synchronize { @stored || 0 }
       end
 
       private
