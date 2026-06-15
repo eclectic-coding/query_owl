@@ -167,9 +167,44 @@ RSpec.describe QueryOwl::Detector do
         .to eq("SELECT * FROM users WHERE id = ?")
     end
 
+    it "replaces float literals with ?" do
+      expect(described_class.normalize("SELECT * FROM products WHERE price > 9.99"))
+        .to eq("SELECT * FROM products WHERE price > ?")
+    end
+
     it "replaces string literals with ?" do
       expect(described_class.normalize("SELECT * FROM users WHERE name = 'Alice'"))
         .to eq("SELECT * FROM users WHERE name = ?")
+    end
+
+    it "replaces bare UUIDs with ?" do
+      expect(described_class.normalize("SELECT * FROM users WHERE id = 550e8400-e29b-41d4-a716-446655440000"))
+        .to eq("SELECT * FROM users WHERE id = ?")
+    end
+
+    it "replaces quoted UUIDs with ?" do
+      expect(described_class.normalize("SELECT * FROM users WHERE id = '550e8400-e29b-41d4-a716-446655440000'"))
+        .to eq("SELECT * FROM users WHERE id = ?")
+    end
+
+    it "replaces PostgreSQL bind parameters with ?" do
+      expect(described_class.normalize("SELECT * FROM users WHERE id = $1 AND name = $2"))
+        .to eq("SELECT * FROM users WHERE id = ? AND name = ?")
+    end
+
+    it "collapses IN-lists to a single placeholder" do
+      expect(described_class.normalize("SELECT * FROM users WHERE id IN (1, 2, 3)"))
+        .to eq("SELECT * FROM users WHERE id IN (?)")
+    end
+
+    it "strips double-quote identifier quoting" do
+      expect(described_class.normalize('SELECT "users"."id" FROM "users" WHERE "users"."id" = 1'))
+        .to eq("SELECT users.id FROM users WHERE users.id = ?")
+    end
+
+    it "strips backtick identifier quoting" do
+      expect(described_class.normalize("SELECT `users`.`id` FROM `users` WHERE `users`.`id` = 1"))
+        .to eq("SELECT users.id FROM users WHERE users.id = ?")
     end
 
     it "collapses whitespace" do
@@ -181,6 +216,14 @@ RSpec.describe QueryOwl::Detector do
       a = described_class.normalize("SELECT * FROM posts WHERE user_id = 1")
       b = described_class.normalize("SELECT * FROM posts WHERE user_id = 99")
       expect(a).to eq(b)
+    end
+
+    it "normalizes queries with different quoting styles to the same string" do
+      pg    = described_class.normalize('SELECT "users"."id" FROM "users" WHERE "users"."id" = 1')
+      mysql = described_class.normalize("SELECT `users`.`id` FROM `users` WHERE `users`.`id` = 1")
+      bare  = described_class.normalize("SELECT users.id FROM users WHERE users.id = 1")
+      expect(pg).to eq(mysql)
+      expect(pg).to eq(bare)
     end
   end
 end
