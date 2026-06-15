@@ -96,6 +96,46 @@ RSpec.describe QueryOwl::Middleware do
     end
   end
 
+  context "request context" do
+    before { QueryOwl.config.enabled = true }
+
+    let(:slow_event) { { type: :slow_query, sql: "SELECT 1", duration_ms: 200, backtrace: [] } }
+
+    before do
+      allow(QueryOwl::Detector).to receive(:detect_n_plus_one).and_return([])
+      allow(QueryOwl::Detector).to receive(:detect_slow_queries).and_return([slow_event])
+      allow(QueryOwl::Detector).to receive(:detect_unused_eager_loads).and_return([])
+      allow(QueryOwl::Logger).to receive(:log_events)
+      allow(QueryOwl::Logger).to receive(:log_summary)
+    end
+
+    it "merges controller, action, and path into detected events" do
+      routed_env = Rack::MockRequest.env_for(
+        "/widgets",
+        "action_dispatch.request.path_parameters" => { controller: "widgets", action: "index" }
+      )
+
+      middleware.call(routed_env)
+
+      expect(QueryOwl::Logger).to have_received(:log_events).with([
+        include(controller: "widgets", action: "index", path: "/widgets")
+      ])
+    end
+
+    it "includes nil controller and action when routing params are absent" do
+      middleware.call(env)
+
+      expect(QueryOwl::Logger).to have_received(:log_events).with([
+        include(controller: nil, action: nil, path: "/")
+      ])
+    end
+
+    it "clears the request context after the request" do
+      middleware.call(env)
+      expect(QueryOwl::RequestContext.current).to eq({})
+    end
+  end
+
   context "when disabled" do
     before { QueryOwl.config.enabled = false }
 

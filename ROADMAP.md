@@ -4,7 +4,6 @@
 
 ## 0.4.0 — Persistence & Notifications
 
-- Request context on every event: controller name, action, request path (via middleware)
 - Custom notifier API: `QueryOwl.config.notifiers << MyNotifier` (duck-typed, receives event hash)
 - Built-in `$stdout` notifier for non-request contexts (background jobs, Rake tasks)
 - Built-in `QueryOwl::Notifiers::Console` — TTY-aware colorized output written directly to `$stdout`, keeping `Rails.logger` / log files free of ANSI escape codes
