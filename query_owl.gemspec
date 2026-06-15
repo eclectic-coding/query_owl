@@ -5,22 +5,19 @@ Gem::Specification.new do |spec|
   spec.version     = QueryOwl::VERSION
   spec.authors     = ["Chuck Smith"]
   spec.email       = ["eclectic-coding@users.noreply.github.com"]
-  spec.homepage    = "TODO"
-  spec.summary     = "TODO: Summary of QueryOwl."
-  spec.description = "TODO: Description of QueryOwl."
+  spec.homepage    = "https://github.com/eclectic-coding/query_owl"
+  spec.summary     = "Structured N+1 and slow query warnings for Rails development."
+  spec.description = "A leaner alternative to Bullet. Detects N+1 queries and slow queries in development, logging structured warnings to your Rails logger without the noise."
   spec.license     = "MIT"
+  spec.required_ruby_version = ">= 3.3"
 
-  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the "allowed_push_host"
-  # to allow pushing to a single host or delete this section to allow pushing to any host.
-  spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
-
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
-  spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
+  spec.metadata["homepage_uri"]    = spec.homepage
+  spec.metadata["source_code_uri"] = "https://github.com/eclectic-coding/query_owl"
+  spec.metadata["changelog_uri"]   = "https://github.com/eclectic-coding/query_owl/blob/main/CHANGELOG.md"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
     Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   end
 
-  spec.add_dependency "rails", ">= 8.1.3"
+  spec.add_dependency "rails", ">= 7.1"
 end
