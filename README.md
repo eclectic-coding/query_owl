@@ -6,7 +6,7 @@
 [![Ruby](https://img.shields.io/badge/ruby-%3E%3D%203.3-ruby)](https://www.ruby-lang.org)
 [![codecov](https://codecov.io/gh/eclectic-coding/query_owl/branch/main/graph/badge.svg)](https://codecov.io/gh/eclectic-coding/query_owl)
 
-A leaner alternative to Bullet. QueryOwl detects N+1 queries and slow queries in development, logging structured warnings to your Rails logger — without the noise.
+A leaner alternative to Bullet. QueryOwl detects N+1 queries, slow queries, and unused eager loads in development, logging structured warnings to your Rails logger — without the noise.
 
 ## Table of Contents
 
@@ -25,6 +25,7 @@ A leaner alternative to Bullet. QueryOwl detects N+1 queries and slow queries in
 
 - **N+1 detection** — flags when the same SQL pattern fires 2+ times in a single request
 - **Slow query detection** — flags queries exceeding a configurable threshold (default: 100ms)
+- **Unused eager load detection** — flags associations preloaded via `includes`/`eager_load` that are never accessed during the request
 - **Structured log output** — JSON-style warnings via `Rails.logger` with SQL, duration, count, and filtered backtrace
 - **Zero overhead in production** — auto-enabled in development only
 
@@ -75,6 +76,7 @@ When a problem is detected, QueryOwl writes a structured line to `Rails.logger`:
 ```
 [QueryOwl] {"type":"n_plus_one","sql":"SELECT * FROM posts WHERE user_id = ?","count":10,"backtrace":["app/controllers/posts_controller.rb:12"]}
 [QueryOwl] {"type":"slow_query","sql":"SELECT * FROM reports WHERE ...","duration_ms":340}
+[QueryOwl] {"type":"unused_eager_load","model":"Widget","association":"tags"}
 ```
 
 [↑ Back to top](#table-of-contents)
@@ -116,15 +118,30 @@ QueryOwl::Logger.log_events(events)
 # => [QueryOwl] {"type":"slow_query","sql":"SELECT ...","duration_ms":...}
 ```
 
+**Trigger unused eager load detection:**
+
+```ruby
+QueryOwl.config.enabled = true
+QueryOwl::EagerLoadTracker.start!
+Widget.includes(:tags).map(&:name)   # loads tags but never touches them
+eager_data = QueryOwl::EagerLoadTracker.stop!
+events = QueryOwl::Detector.detect_unused_eager_loads(eager_data)
+QueryOwl::Logger.log_events(events)
+# => [QueryOwl] {"type":"unused_eager_load","model":"Widget","association":"tags"}
+```
+
 **Full pipeline** (as it runs on every real HTTP request):
 
 ```ruby
 QueryOwl.config.slow_query_threshold_ms = 0
 QueryOwl::QueryTracker.start!
+QueryOwl::EagerLoadTracker.start!
 Widget.all.each { |w| Widget.find(w.id) }
-queries = QueryOwl::QueryTracker.stop!
-events  = QueryOwl::Detector.detect_n_plus_one(queries) +
-          QueryOwl::Detector.detect_slow_queries(queries)
+queries    = QueryOwl::QueryTracker.stop!
+eager_data = QueryOwl::EagerLoadTracker.stop!
+events     = QueryOwl::Detector.detect_n_plus_one(queries) +
+             QueryOwl::Detector.detect_slow_queries(queries) +
+             QueryOwl::Detector.detect_unused_eager_loads(eager_data)
 QueryOwl::Logger.log_events(events)
 ```
 
