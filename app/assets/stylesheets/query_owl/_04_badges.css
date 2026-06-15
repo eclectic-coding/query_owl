@@ -1,0 +1,13 @@
+.qo-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.qo-badge--n_plus_one       { background: #fde8e8; color: #c0392b; }
+.qo-badge--slow_query       { background: #fef3e2; color: #e67e22; }
+.qo-badge--unused_eager_load { background: #e8f4fd; color: #2980b9; }

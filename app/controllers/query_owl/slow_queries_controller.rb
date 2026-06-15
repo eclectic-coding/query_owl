@@ -1,7 +1,8 @@
 module QueryOwl
   class SlowQueriesController < ActionController::Base
     protect_from_forgery with: :null_session
-    layout false
+    layout "query_owl/application"
+    helper QueryOwl::ApplicationHelper
 
     before_action :check_dashboard_enabled, if: -> { request.format.html? }
 
