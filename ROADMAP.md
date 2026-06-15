@@ -3,8 +3,6 @@
 
 ## 0.3.0 — Slow Queries Dashboard
 
-- Optional minimal HTML view (no Tailwind, no asset pipeline dependency)
-
 ---
 
 ## 0.4.0 — Persistence & Notifications
