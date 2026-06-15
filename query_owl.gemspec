@@ -3,8 +3,8 @@ require_relative "lib/query_owl/version"
 Gem::Specification.new do |spec|
   spec.name        = "query_owl"
   spec.version     = QueryOwl::VERSION
-  spec.authors     = [ "Chuck Smith" ]
-  spec.email       = [ "eclectic-coding@users.noreply.github.com" ]
+  spec.authors     = ["Chuck Smith"]
+  spec.email       = ["eclectic-coding@users.noreply.github.com"]
   spec.homepage    = "TODO"
   spec.summary     = "TODO: Summary of QueryOwl."
   spec.description = "TODO: Description of QueryOwl."
