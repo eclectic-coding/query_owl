@@ -67,6 +67,52 @@ RSpec.describe QueryOwl::Detector do
     end
   end
 
+  describe ".detect_slow_queries" do
+    def slow_query(sql, duration_ms:, cached: false)
+      { sql: sql, duration_ms: duration_ms, cached: cached, backtrace: ["app/models/post.rb:5"] }
+    end
+
+    it "flags queries exceeding the threshold" do
+      results = described_class.detect_slow_queries([slow_query("SELECT * FROM posts", duration_ms: 150)])
+      expect(results.length).to eq(1)
+      expect(results.first[:type]).to eq(:slow_query)
+      expect(results.first[:duration_ms]).to eq(150)
+    end
+
+    it "does not flag queries below the threshold" do
+      results = described_class.detect_slow_queries([slow_query("SELECT * FROM posts", duration_ms: 50)])
+      expect(results).to be_empty
+    end
+
+    it "flags queries at exactly the threshold" do
+      results = described_class.detect_slow_queries([slow_query("SELECT 1", duration_ms: 100)])
+      expect(results.length).to eq(1)
+    end
+
+    it "excludes cached queries" do
+      results = described_class.detect_slow_queries([slow_query("SELECT * FROM posts", duration_ms: 500, cached: true)])
+      expect(results).to be_empty
+    end
+
+    it "normalizes the SQL in the result" do
+      results = described_class.detect_slow_queries([slow_query("SELECT * FROM posts WHERE id = 42", duration_ms: 200)])
+      expect(results.first[:sql]).to eq("SELECT * FROM posts WHERE id = ?")
+    end
+
+    it "includes backtrace in the result" do
+      results = described_class.detect_slow_queries([slow_query("SELECT 1", duration_ms: 200)])
+      expect(results.first[:backtrace]).to eq(["app/models/post.rb:5"])
+    end
+
+    it "respects slow_query_threshold_ms config" do
+      QueryOwl.config.slow_query_threshold_ms = 500
+      results = described_class.detect_slow_queries([slow_query("SELECT 1", duration_ms: 200)])
+      expect(results).to be_empty
+    ensure
+      QueryOwl.reset_config!
+    end
+  end
+
   describe ".normalize" do
     it "replaces numeric literals with ?" do
       expect(described_class.normalize("SELECT * FROM users WHERE id = 42"))

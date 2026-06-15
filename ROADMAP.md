@@ -4,7 +4,6 @@
 
 Goal: install the gem, drop one line in an initializer, and immediately see structured warnings in development logs. No database, no UI.
 
-- **Slow query detection** — flag any query exceeding a configurable threshold (default: 100ms)
 - **Structured log output** — emit JSON-style warning lines via `Rails.logger.warn` containing:
   - `type` (`n_plus_one` | `slow_query`)
   - `sql` (normalized, no interpolated values)

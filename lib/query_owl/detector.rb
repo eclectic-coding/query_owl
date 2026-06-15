@@ -26,6 +26,22 @@ module QueryOwl
           end
       end
 
+      def detect_slow_queries(queries)
+        threshold = QueryOwl.config.slow_query_threshold_ms
+
+        queries.filter_map do |q|
+          next if q[:cached]
+          next if q[:duration_ms] < threshold
+
+          {
+            type: :slow_query,
+            sql: normalize(q[:sql]),
+            duration_ms: q[:duration_ms],
+            backtrace: q[:backtrace]
+          }
+        end
+      end
+
       def normalize(sql)
         NORMALIZE_PATTERNS
           .reduce(sql.to_s) { |s, (pattern, replacement)| s.gsub(pattern, replacement) }
