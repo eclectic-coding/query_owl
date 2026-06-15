@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `backtrace_lines` config option — controls how many backtrace frames are captured per query (default: `5`)
 - `backtrace_filter` config option — accepts a callable (proc/lambda) that receives each backtrace line and returns `true` to keep it; defaults to stripping gem paths and `lib/query_owl/` internals, leaving only app code
 - Per-request summary line — emitted once at the end of each request when at least one issue was detected; format: `[QueryOwl] Request complete — 3 N+1s, 1 slow query, 2 unused eager loads`
+- `raise_on_n_plus_one` config option (default: `false`) — raises `QueryOwl::NPlusOneError` instead of logging when an N+1 is detected; intended for CI test suites where silent warnings are easy to miss
 
 ## [0.1.0] - 2026-06-15
 

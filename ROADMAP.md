@@ -2,7 +2,6 @@
 
 ## 0.2.0 — UX Polish
 
-- `raise_on_n_plus_one` config option — raises instead of logging (useful in CI test suites)
 - Improved SQL normalization to better group parameterized queries across different bind values
 
 ---

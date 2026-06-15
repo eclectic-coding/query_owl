@@ -4,6 +4,13 @@ module QueryOwl
       @app = app
     end
 
+    def raise_on_n_plus_one!(events)
+      event = events.find { |e| e[:type] == :n_plus_one }
+      return unless event
+
+      raise NPlusOneError, "N+1 detected: #{event[:sql]} (#{event[:count]} times) #{event[:backtrace].first}"
+    end
+
     def call(env)
       return @app.call(env) unless QueryOwl.config.enabled
 
@@ -18,6 +25,7 @@ module QueryOwl
                     Detector.detect_unused_eager_loads(eager_data)
       Logger.log_events(events)
       Logger.log_summary(events)
+      raise_on_n_plus_one!(events) if QueryOwl.config.raise_on_n_plus_one
     end
   end
 end

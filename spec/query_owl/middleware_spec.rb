@@ -37,6 +37,59 @@ RSpec.describe QueryOwl::Middleware do
     end
   end
 
+  context "when raise_on_n_plus_one is enabled" do
+    before do
+      QueryOwl.config.enabled = true
+      QueryOwl.config.raise_on_n_plus_one = true
+    end
+
+    let(:n_plus_one_event) do
+      { type: :n_plus_one, sql: "SELECT * FROM widgets WHERE id = ?", count: 3, backtrace: ["app/models/widget.rb:5"] }
+    end
+
+    it "raises NPlusOneError when an N+1 is detected" do
+      allow(QueryOwl::Detector).to receive(:detect_n_plus_one).and_return([n_plus_one_event])
+      allow(QueryOwl::Detector).to receive(:detect_slow_queries).and_return([])
+      allow(QueryOwl::Detector).to receive(:detect_unused_eager_loads).and_return([])
+      allow(QueryOwl::Logger).to receive(:log_events)
+      allow(QueryOwl::Logger).to receive(:log_summary)
+
+      expect { middleware.call(env) }.to raise_error(QueryOwl::NPlusOneError, /N\+1 detected/)
+    end
+
+    it "includes SQL and count in the error message" do
+      allow(QueryOwl::Detector).to receive(:detect_n_plus_one).and_return([n_plus_one_event])
+      allow(QueryOwl::Detector).to receive(:detect_slow_queries).and_return([])
+      allow(QueryOwl::Detector).to receive(:detect_unused_eager_loads).and_return([])
+      allow(QueryOwl::Logger).to receive(:log_events)
+      allow(QueryOwl::Logger).to receive(:log_summary)
+
+      expect { middleware.call(env) }
+        .to raise_error(QueryOwl::NPlusOneError, /SELECT \* FROM widgets.*3 times/m)
+    end
+
+    it "does not raise when no N+1s are detected" do
+      allow(QueryOwl::Detector).to receive(:detect_n_plus_one).and_return([])
+      allow(QueryOwl::Detector).to receive(:detect_slow_queries).and_return([])
+      allow(QueryOwl::Detector).to receive(:detect_unused_eager_loads).and_return([])
+      allow(QueryOwl::Logger).to receive(:log_events)
+      allow(QueryOwl::Logger).to receive(:log_summary)
+
+      expect { middleware.call(env) }.not_to raise_error
+    end
+
+    it "does not raise for slow queries or unused eager loads" do
+      slow = { type: :slow_query, sql: "SELECT 1", duration_ms: 200, backtrace: [] }
+      allow(QueryOwl::Detector).to receive(:detect_n_plus_one).and_return([])
+      allow(QueryOwl::Detector).to receive(:detect_slow_queries).and_return([slow])
+      allow(QueryOwl::Detector).to receive(:detect_unused_eager_loads).and_return([])
+      allow(QueryOwl::Logger).to receive(:log_events)
+      allow(QueryOwl::Logger).to receive(:log_summary)
+
+      expect { middleware.call(env) }.not_to raise_error
+    end
+  end
+
   context "when disabled" do
     before { QueryOwl.config.enabled = false }
 
