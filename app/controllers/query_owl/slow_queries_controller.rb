@@ -1,12 +1,27 @@
 module QueryOwl
-  class SlowQueriesController < ApplicationController
+  class SlowQueriesController < ActionController::Base
+    protect_from_forgery with: :null_session
+    layout false
+
+    before_action :check_dashboard_enabled, if: -> { request.format.html? }
+
     def index
       filters = request.query_parameters
       events  = EventStore.all
       events  = events.select { |e| e[:type].to_s == filters["type"] }       if filters["type"].present?
       events  = events.select { |e| e[:controller] == filters["controller"] } if filters["controller"].present?
       events  = events.select { |e| e[:action] == filters["action"] }         if filters["action"].present?
-      render json: events
+
+      respond_to do |format|
+        format.json { render json: events }
+        format.html { @events = events.reverse }
+      end
+    end
+
+    private
+
+    def check_dashboard_enabled
+      head :forbidden unless QueryOwl.config.dashboard_enabled
     end
   end
 end
