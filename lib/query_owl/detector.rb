@@ -1,9 +1,13 @@
 module QueryOwl
   module Detector
-    # Matches numeric literals, single-quoted strings, and IN-list contents.
     NORMALIZE_PATTERNS = [
       [/'[^']*'/, "?"],
-      [/\b\d+\b/, "?"],
+      [/\b[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\b/i, "?"],
+      [/\$\d+/, "?"],
+      [/\b\d+\.?\d*\b/, "?"],
+      [/\bIN\s*\(\s*\?(?:\s*,\s*\?)*\s*\)/i, "IN (?)"],
+      [/"([^"]+)"/, '\1'],
+      [/`([^`]+)`/, '\1'],
       [/\s+/, " "]
     ].freeze
 
