@@ -24,7 +24,9 @@ module QueryOwl
           QueryTracker.start!
           @app.call(env)
         ensure
-          QueryTracker.stop!
+          queries = QueryTracker.stop!
+          events  = Detector.detect_n_plus_one(queries) + Detector.detect_slow_queries(queries)
+          Logger.log_events(events)
         end
       end)
     end
