@@ -56,6 +56,54 @@ When a problem is detected, QueryOwl writes a structured line to `Rails.logger`:
 
 See [ROADMAP.md](ROADMAP.md) for planned releases, including unused eager load detection (0.2.0) and a `/rails/slow_queries` dashboard endpoint (0.3.0).
 
+## Manual Testing in the Dummy App
+
+The gem ships with a minimal Rails app in `spec/dummy/` for manual verification.
+
+**Start a console:**
+
+```sh
+cd spec/dummy
+RAILS_ENV=development bin/rails console
+```
+
+**Trigger N+1 detection:**
+
+```ruby
+# Enable the gem (development is on by default, but make sure)
+QueryOwl.config.enabled = true
+
+# Simulate a request — start the tracker, fire repeated queries, stop and log
+QueryOwl::QueryTracker.start!
+3.times { |i| Widget.find(i + 1) rescue nil }
+queries = QueryOwl::QueryTracker.stop!
+events  = QueryOwl::Detector.detect_n_plus_one(queries) +
+          QueryOwl::Detector.detect_slow_queries(queries)
+QueryOwl::Logger.log_events(events)
+# => logs: [QueryOwl] {"type":"n_plus_one","sql":"SELECT ...","count":3,...}
+```
+
+**Trigger slow query detection:**
+
+```ruby
+QueryOwl.config.slow_query_threshold_ms = 0  # flag everything
+
+QueryOwl::QueryTracker.start!
+Widget.all.to_a
+queries = QueryOwl::QueryTracker.stop!
+events  = QueryOwl::Detector.detect_slow_queries(queries)
+QueryOwl::Logger.log_events(events)
+# => logs: [QueryOwl] {"type":"slow_query","sql":"SELECT ...","duration_ms":...}
+```
+
+**Seed the dummy database first** (if needed):
+
+```sh
+cd spec/dummy
+RAILS_ENV=development bin/rails db:migrate
+RAILS_ENV=development bin/rails runner "3.times { |i| Widget.create!(name: \"Widget #{i}\") }"
+```
+
 ## Contributing
 
 1. Fork the repo and create a `feat/<name>` branch
