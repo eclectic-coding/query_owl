@@ -25,6 +25,7 @@ module QueryOwl
                     Detector.detect_unused_eager_loads(eager_data)
       Logger.log_events(events)
       Logger.log_summary(events)
+      events.each { |e| EventStore.push(e) }
       raise_on_n_plus_one!(events) if QueryOwl.config.raise_on_n_plus_one
     end
   end

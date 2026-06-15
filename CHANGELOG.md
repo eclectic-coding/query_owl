@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `EventStore` — thread-safe fixed-size ring buffer that retains the last N detected events across requests; configurable via `config.event_store_size` (default: `100`); each stored event receives a `:recorded_at` timestamp; oldest events are dropped when the buffer is full
+
 ## [0.2.0] - 2026-06-15
 
 ### Added
