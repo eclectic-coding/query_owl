@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Unused eager load detection — tracks associations preloaded via `includes`/`eager_load` and flags any not accessed in user code during the request; emits `:unused_eager_load` JSON events via `Rails.logger`
+- `EagerLoadTracker` — thread-local tracker that records preloaded associations (via `Preloader#initialize` prepend) and user-code accesses (via `ActiveRecord::Base#association` prepend); guards against Rails' internal association wiring being counted as access by wrapping `Preloader#call`
+
 ## [0.1.0] - 2026-06-15
 
 ### Added

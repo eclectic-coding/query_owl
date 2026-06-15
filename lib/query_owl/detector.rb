@@ -42,6 +42,16 @@ module QueryOwl
         end
       end
 
+      def detect_unused_eager_loads(eager_data)
+        preloaded = eager_data[:preloaded] || []
+        accessed  = eager_data[:accessed]  || Set.new
+
+        preloaded
+          .uniq { |e| "#{e[:model]}##{e[:association]}" }
+          .reject { |e| accessed.include?("#{e[:model]}##{e[:association]}") }
+          .map { |e| { type: :unused_eager_load, model: e[:model], association: e[:association] } }
+      end
+
       def normalize(sql)
         NORMALIZE_PATTERNS
           .reduce(sql.to_s) { |s, (pattern, replacement)| s.gsub(pattern, replacement) }

@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_01_01_000000) do
+ActiveRecord::Schema[8.1].define(version: 2025_01_01_000001) do
+  create_table "tags", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.integer "widget_id", null: false
+    t.index ["widget_id"], name: "index_tags_on_widget_id"
+  end
+
   create_table "widgets", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_foreign_key "tags", "widgets"
 end
