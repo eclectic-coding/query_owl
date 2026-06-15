@@ -37,7 +37,9 @@ module QueryOwl
       private
 
       def filtered_backtrace
-        caller.grep_v(%r{/gems/|/rubygems/|/ruby/gems/|lib/query_owl/}).first(5)
+        filter = QueryOwl.config.backtrace_filter
+        lines  = QueryOwl.config.backtrace_lines
+        caller.select { |line| filter.call(line) }.first(lines)
       end
     end
   end

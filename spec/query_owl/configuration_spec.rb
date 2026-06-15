@@ -7,6 +7,8 @@ RSpec.describe QueryOwl::Configuration do
     it { expect(config.slow_query_threshold_ms).to eq(100) }
     it { expect(config.n_plus_one_threshold).to eq(2) }
     it { expect(config.log_level).to eq(:warn) }
+    it { expect(config.backtrace_lines).to eq(5) }
+    it { expect(config.backtrace_filter).to respond_to(:call) }
 
     it "enables in development" do
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("development"))
@@ -29,6 +31,35 @@ RSpec.describe QueryOwl::Configuration do
 
     it "raises on invalid level" do
       expect { config.log_level = :error }.to raise_error(ArgumentError, /log_level must be one of/)
+    end
+  end
+
+  describe "#backtrace_filter=" do
+    it "accepts a callable" do
+      filter = ->(line) { line.start_with?("app/") }
+      expect { config.backtrace_filter = filter }.not_to raise_error
+      expect(config.backtrace_filter).to be(filter)
+    end
+
+    it "raises when given a non-callable" do
+      expect { config.backtrace_filter = "not a proc" }
+        .to raise_error(ArgumentError, /must respond to #call/)
+    end
+  end
+
+  describe "DEFAULT_BACKTRACE_FILTER" do
+    subject(:filter) { described_class::DEFAULT_BACKTRACE_FILTER }
+
+    it "rejects gem paths" do
+      expect(filter.call("/usr/local/bundle/gems/activerecord-7/lib/foo.rb")).to be(false)
+    end
+
+    it "rejects query_owl internals" do
+      expect(filter.call("/app/lib/query_owl/middleware.rb")).to be(false)
+    end
+
+    it "keeps app code" do
+      expect(filter.call("app/controllers/widgets_controller.rb:10")).to be(true)
     end
   end
 end
