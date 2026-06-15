@@ -13,11 +13,6 @@ Goal: install the gem, drop one line in an initializer, and immediately see stru
   - `duration_ms` (for slow queries)
   - `count` (for N+1, how many times the pattern fired)
   - `backtrace` (filtered to app code only)
-- **Configuration API** — `QueryOwl.configure` block with:
-  - `enabled` (default: `true` in development, `false` elsewhere)
-  - `slow_query_threshold_ms` (default: `100`)
-  - `n_plus_one_threshold` (min repetitions before flagging, default: `2`)
-  - `log_level` (`:warn` | `:info` | `:debug`, default: `:warn`)
 - Auto-enabled in development only; no overhead in production or test
 
 ---

@@ -7,4 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Configuration API — `QueryOwl.configure` block with `enabled`, `slow_query_threshold_ms`, `n_plus_one_threshold`, and `log_level` options
+
 [Unreleased]: https://github.com/eclectic-coding/query_owl/compare/HEAD
