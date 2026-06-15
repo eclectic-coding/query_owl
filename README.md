@@ -26,6 +26,7 @@ A leaner alternative to Bullet. QueryOwl detects N+1 queries, slow queries, and 
 - **N+1 detection** — flags when the same SQL pattern fires 2+ times in a single request
 - **Slow query detection** — flags queries exceeding a configurable threshold (default: 100ms)
 - **Unused eager load detection** — flags associations preloaded via `includes`/`eager_load` that are never accessed during the request
+- **Per-request summary** — single summary line at the end of each request with totals (e.g. `Request complete — 3 N+1s, 1 slow query`)
 - **Structured log output** — JSON-style warnings via `Rails.logger` with SQL, duration, count, and filtered backtrace
 - **Zero overhead in production** — auto-enabled in development only
 
@@ -79,6 +80,7 @@ When a problem is detected, QueryOwl writes a structured line to `Rails.logger`:
 [QueryOwl] {"type":"n_plus_one","sql":"SELECT * FROM posts WHERE user_id = ?","count":10,"backtrace":["app/controllers/posts_controller.rb:12"]}
 [QueryOwl] {"type":"slow_query","sql":"SELECT * FROM reports WHERE ...","duration_ms":340}
 [QueryOwl] {"type":"unused_eager_load","model":"Widget","association":"tags"}
+[QueryOwl] Request complete — 10 N+1s, 1 slow query, 1 unused eager load
 ```
 
 [↑ Back to top](#table-of-contents)
