@@ -1,8 +1,7 @@
 # ROADMAP
 
-## 0.2.0 — Unused Eager Load Detection & UX Polish
+## 0.2.0 — UX Polish
 
-- Detect `includes`/`eager_load` calls that load associations never accessed during the request
 - Configurable backtrace depth and filtering (exclude gem paths, Rails internals)
 - Per-request summary line appended at end of request (total N+1 count, slow query count)
 - `raise_on_n_plus_one` config option — raises instead of logging (useful in CI test suites)
