@@ -17,6 +17,7 @@ module QueryOwl
                     Detector.detect_slow_queries(queries) +
                     Detector.detect_unused_eager_loads(eager_data)
       Logger.log_events(events)
+      Logger.log_summary(events)
     end
   end
 end
