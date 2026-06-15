@@ -4,7 +4,6 @@
 
 ## 0.4.0 — Persistence & Notifications
 
-- `rails generate query_owl:install` — generates a `config/initializers/query_owl.rb` with all config options commented and documented
 - File-based persistence: append structured JSON lines to a configurable log file path
 - Request context on every event: controller name, action, request path (via middleware)
 - Custom notifier API: `QueryOwl.config.notifiers << MyNotifier` (duck-typed, receives event hash)

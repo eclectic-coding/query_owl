@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `rails generate query_owl:install` — generates a `config/initializers/query_owl.rb` with all nine configuration options documented and commented out by default
+
 ## [0.3.0] - 2026-06-15
 
 ### Added
