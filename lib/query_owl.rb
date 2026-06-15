@@ -8,6 +8,8 @@ require "query_owl/middleware"
 require "query_owl/engine"
 
 module QueryOwl
+  class NPlusOneError < StandardError; end
+
   class << self
     def configure
       yield config
