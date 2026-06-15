@@ -1,9 +1,6 @@
 # ROADMAP
 
 
-## 0.3.0 — Slow Queries Dashboard
-
----
 
 ## 0.4.0 — Persistence & Notifications
 
