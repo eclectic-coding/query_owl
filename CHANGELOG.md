@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Configuration API — `QueryOwl.configure` block with `enabled`, `slow_query_threshold_ms`, `n_plus_one_threshold`, and `log_level` options
-- Query tracker — subscribes to `sql.active_record` notifications and accumulates queries per request using thread-local storage; ignores schema, transaction, and cached queries
+- Query tracker — subscribes to `sql.active_record` notifications and accumulates queries per request using thread-local storage; ignores schema, transaction, and cached queries; captures filtered backtrace at query time
+- N+1 detector — groups queries by normalized SQL (strips literals and whitespace) and flags patterns repeated at or above `n_plus_one_threshold`
 
 [Unreleased]: https://github.com/eclectic-coding/query_owl/compare/HEAD
