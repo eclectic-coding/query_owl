@@ -42,6 +42,38 @@ RSpec.describe QueryOwl::Middleware do
       middleware.call(env)
     end
 
+    it "rescues notifier errors and logs them without crashing the request" do
+      slow = { type: :slow_query, sql: "SELECT 1", duration_ms: 200, backtrace: [] }
+      bad_notifier = double("bad_notifier")
+      allow(bad_notifier).to receive(:call).and_raise(RuntimeError, "webhook timeout")
+      QueryOwl.config.notifiers = [bad_notifier]
+      allow(QueryOwl::Detector).to receive(:detect_n_plus_one).and_return([])
+      allow(QueryOwl::Detector).to receive(:detect_slow_queries).and_return([slow])
+      allow(QueryOwl::Detector).to receive(:detect_unused_eager_loads).and_return([])
+      allow(QueryOwl::Logger).to receive(:log_summary)
+      allow(Rails.logger).to receive(:error)
+
+      expect { middleware.call(env) }.not_to raise_error
+      expect(Rails.logger).to have_received(:error).with(/webhook timeout/)
+    end
+
+    it "continues calling remaining notifiers after one raises" do
+      slow = { type: :slow_query, sql: "SELECT 1", duration_ms: 200, backtrace: [] }
+      bad_notifier  = double("bad_notifier")
+      good_notifier = double("good_notifier", call: nil)
+      allow(bad_notifier).to receive(:call).and_raise(RuntimeError, "boom")
+      QueryOwl.config.notifiers = [bad_notifier, good_notifier]
+      allow(QueryOwl::Detector).to receive(:detect_n_plus_one).and_return([])
+      allow(QueryOwl::Detector).to receive(:detect_slow_queries).and_return([slow])
+      allow(QueryOwl::Detector).to receive(:detect_unused_eager_loads).and_return([])
+      allow(QueryOwl::Logger).to receive(:log_summary)
+      allow(Rails.logger).to receive(:error)
+
+      middleware.call(env)
+
+      expect(good_notifier).to have_received(:call)
+    end
+
     it "still stops the tracker if the inner app raises" do
       raising_app = ->(_env) { raise "boom" }
       m = described_class.new(raising_app)
