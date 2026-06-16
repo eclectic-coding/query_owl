@@ -80,6 +80,23 @@ RSpec.describe "GET /query_owl/slow_queries", type: :request do
       expect(response.body).to include("SELECT * FROM users WHERE id = ?")
     end
 
+    it "displays request context columns when present" do
+      QueryOwl::EventStore.clear
+      QueryOwl::EventStore.push(
+        type:       :n_plus_one,
+        sql:        "SELECT * FROM widgets WHERE id = ?",
+        count:      3,
+        backtrace:  [],
+        controller: "widgets",
+        action:     "index",
+        path:       "/widgets"
+      )
+      QueryOwl.config.dashboard_enabled = true
+      get "/query_owl/slow_queries", headers: { "Accept" => "text/html" }
+      expect(response.body).to include("widgets#index")
+      expect(response.body).to include("/widgets")
+    end
+
     it "returns 403 when dashboard_enabled is false" do
       QueryOwl.config.dashboard_enabled = false
       get "/query_owl/slow_queries", headers: { "Accept" => "text/html" }

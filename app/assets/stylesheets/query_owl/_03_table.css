@@ -27,3 +27,8 @@
 
 .qo-table tr:last-child td { border-bottom: none; }
 .qo-table tr:hover td      { background: #fafafa; }
+
+.qo-table td:nth-child(2) { max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.qo-request  { white-space: nowrap; }
+.qo-path     { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 11px; opacity: .7; }
