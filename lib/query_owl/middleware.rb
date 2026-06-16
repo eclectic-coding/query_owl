@@ -28,7 +28,7 @@ module QueryOwl
                     Detector.detect_slow_queries(queries) +
                     Detector.detect_unused_eager_loads(eager_data))
                    .map { |e| e.merge(context) }
-      Logger.log_events(events)
+      events.each { |event| QueryOwl.config.notifiers.each { |notifier| notifier.call(event) } }
       Logger.log_summary(events)
       events.each { |e| EventStore.push(e) }
       FileLogger.append(events)

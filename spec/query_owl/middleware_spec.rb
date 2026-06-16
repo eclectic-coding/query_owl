@@ -22,10 +22,18 @@ RSpec.describe QueryOwl::Middleware do
       middleware.call(env)
     end
 
-    it "runs detection and logging after the request" do
-      allow(QueryOwl::QueryTracker).to receive(:stop!).and_return([])
-      expect(QueryOwl::Logger).to receive(:log_events).with([])
+    it "dispatches detected events to each configured notifier" do
+      slow = { type: :slow_query, sql: "SELECT 1", duration_ms: 200, backtrace: [] }
+      notifier = double("notifier", call: nil)
+      QueryOwl.config.notifiers = [notifier]
+      allow(QueryOwl::Detector).to receive(:detect_n_plus_one).and_return([])
+      allow(QueryOwl::Detector).to receive(:detect_slow_queries).and_return([slow])
+      allow(QueryOwl::Detector).to receive(:detect_unused_eager_loads).and_return([])
+      allow(QueryOwl::Logger).to receive(:log_summary)
+
       middleware.call(env)
+
+      expect(notifier).to have_received(:call).once
     end
 
     it "appends events to the file logger after the request" do
@@ -57,7 +65,6 @@ RSpec.describe QueryOwl::Middleware do
       allow(QueryOwl::Detector).to receive(:detect_n_plus_one).and_return([n_plus_one_event])
       allow(QueryOwl::Detector).to receive(:detect_slow_queries).and_return([])
       allow(QueryOwl::Detector).to receive(:detect_unused_eager_loads).and_return([])
-      allow(QueryOwl::Logger).to receive(:log_events)
       allow(QueryOwl::Logger).to receive(:log_summary)
 
       expect { middleware.call(env) }.to raise_error(QueryOwl::NPlusOneError, /N\+1 detected/)
@@ -67,7 +74,6 @@ RSpec.describe QueryOwl::Middleware do
       allow(QueryOwl::Detector).to receive(:detect_n_plus_one).and_return([n_plus_one_event])
       allow(QueryOwl::Detector).to receive(:detect_slow_queries).and_return([])
       allow(QueryOwl::Detector).to receive(:detect_unused_eager_loads).and_return([])
-      allow(QueryOwl::Logger).to receive(:log_events)
       allow(QueryOwl::Logger).to receive(:log_summary)
 
       expect { middleware.call(env) }
@@ -78,7 +84,6 @@ RSpec.describe QueryOwl::Middleware do
       allow(QueryOwl::Detector).to receive(:detect_n_plus_one).and_return([])
       allow(QueryOwl::Detector).to receive(:detect_slow_queries).and_return([])
       allow(QueryOwl::Detector).to receive(:detect_unused_eager_loads).and_return([])
-      allow(QueryOwl::Logger).to receive(:log_events)
       allow(QueryOwl::Logger).to receive(:log_summary)
 
       expect { middleware.call(env) }.not_to raise_error
@@ -89,7 +94,6 @@ RSpec.describe QueryOwl::Middleware do
       allow(QueryOwl::Detector).to receive(:detect_n_plus_one).and_return([])
       allow(QueryOwl::Detector).to receive(:detect_slow_queries).and_return([slow])
       allow(QueryOwl::Detector).to receive(:detect_unused_eager_loads).and_return([])
-      allow(QueryOwl::Logger).to receive(:log_events)
       allow(QueryOwl::Logger).to receive(:log_summary)
 
       expect { middleware.call(env) }.not_to raise_error
@@ -100,12 +104,13 @@ RSpec.describe QueryOwl::Middleware do
     before { QueryOwl.config.enabled = true }
 
     let(:slow_event) { { type: :slow_query, sql: "SELECT 1", duration_ms: 200, backtrace: [] } }
+    let(:captured) { [] }
 
     before do
+      QueryOwl.config.notifiers = [->(e) { captured << e }]
       allow(QueryOwl::Detector).to receive(:detect_n_plus_one).and_return([])
       allow(QueryOwl::Detector).to receive(:detect_slow_queries).and_return([slow_event])
       allow(QueryOwl::Detector).to receive(:detect_unused_eager_loads).and_return([])
-      allow(QueryOwl::Logger).to receive(:log_events)
       allow(QueryOwl::Logger).to receive(:log_summary)
     end
 
@@ -117,17 +122,13 @@ RSpec.describe QueryOwl::Middleware do
 
       middleware.call(routed_env)
 
-      expect(QueryOwl::Logger).to have_received(:log_events).with([
-        include(controller: "widgets", action: "index", path: "/widgets")
-      ])
+      expect(captured).to include(include(controller: "widgets", action: "index", path: "/widgets"))
     end
 
     it "includes nil controller and action when routing params are absent" do
       middleware.call(env)
 
-      expect(QueryOwl::Logger).to have_received(:log_events).with([
-        include(controller: nil, action: nil, path: "/")
-      ])
+      expect(captured).to include(include(controller: nil, action: nil, path: "/"))
     end
 
     it "clears the request context after the request" do
