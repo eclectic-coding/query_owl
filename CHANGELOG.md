@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-06-16
+
 ### Added
 - `QueryOwl.deprecator` — an `ActiveSupport::Deprecation` instance registered with `app.deprecators[:query_owl]` on boot; all 13 configuration options audited and confirmed stable for 1.0 (no removals or renames)
 - README expanded with full configuration reference table, Notifiers section, Ignoring Paths and Controllers section, Test Helper section, Rake Tasks section, and updated Dashboard section with filter/sort params
@@ -87,7 +89,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Slow query detector — flags individual queries whose duration meets or exceeds `slow_query_threshold_ms` (default: 100ms)
 - Structured logger — emits `[QueryOwl] {JSON}` warning lines via `Rails.logger` at the configured log level; `QueryOwl::Middleware` wires tracker → detector → logger on every request
 
-[Unreleased]: https://github.com/eclectic-coding/query_owl/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/eclectic-coding/query_owl/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v1.0.0
 [0.7.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.7.0
 [0.6.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.6.0
 [0.5.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.5.0

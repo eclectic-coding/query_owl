@@ -1,8 +1,5 @@
 # ROADMAP
 
-## 1.0.0 — Stable Public API
-
----
 
 No future milestones are planned at this time.
 
