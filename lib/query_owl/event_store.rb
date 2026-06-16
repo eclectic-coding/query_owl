@@ -4,7 +4,7 @@ module QueryOwl
       def push(event)
         mutex.synchronize do
           ensure_buffer_size
-          buffer[@write_pos] = event.merge(recorded_at: Time.now)
+          buffer[@write_pos] = event.merge(recorded_at: Time.current)
           @write_pos = (@write_pos + 1) % capacity
           @stored    = [@stored + 1, capacity].min
         end
