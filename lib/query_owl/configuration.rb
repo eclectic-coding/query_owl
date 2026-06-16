@@ -5,7 +5,8 @@ module QueryOwl
 
     attr_reader :log_level, :backtrace_filter
     attr_accessor :enabled, :slow_query_threshold_ms, :n_plus_one_threshold, :backtrace_lines,
-                  :raise_on_n_plus_one, :event_store_size, :dashboard_enabled, :log_file
+                  :raise_on_n_plus_one, :event_store_size, :dashboard_enabled, :log_file,
+                  :ignore_paths, :ignore_controllers
 
     def notifiers
       @notifiers ||= [Notifiers::Logger.new]
@@ -31,6 +32,8 @@ module QueryOwl
       @event_store_size        = 100
       @dashboard_enabled       = Rails.env.development?
       @log_file                = nil
+      @ignore_paths            = []
+      @ignore_controllers      = []
     end
 
     def log_level=(level)

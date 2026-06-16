@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `config.ignore_paths` — array of path prefix strings or regexes; requests whose `PATH_INFO` matches any entry are skipped entirely in the middleware (no tracking, no events, no notifiers)
+- `config.ignore_controllers` — array of controller name strings (e.g. `"rails/health"`, `"admin/metrics"`); matched after routing, trackers still stop cleanly but no events are dispatched
+- Both options default to `[]`; documented with examples in the install generator template
+
 ## [0.4.1] - 2026-06-16
 
 ### Fixed

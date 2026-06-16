@@ -178,4 +178,84 @@ RSpec.describe QueryOwl::Middleware do
       expect(status).to eq(200)
     end
   end
+
+  context "ignore_paths" do
+    before { QueryOwl.config.enabled = true }
+
+    it "skips tracking for an exact string prefix match" do
+      QueryOwl.config.ignore_paths = ["/up"]
+      health_env = Rack::MockRequest.env_for("/up")
+      expect(QueryOwl::QueryTracker).not_to receive(:start!)
+      status, _, _ = middleware.call(health_env)
+      expect(status).to eq(200)
+    end
+
+    it "skips tracking when path matches a regex" do
+      QueryOwl.config.ignore_paths = [%r{^/health}]
+      health_env = Rack::MockRequest.env_for("/healthz")
+      expect(QueryOwl::QueryTracker).not_to receive(:start!)
+      middleware.call(health_env)
+    end
+
+    it "does not skip tracking for a non-matching path" do
+      QueryOwl.config.ignore_paths = ["/up"]
+      expect(QueryOwl::QueryTracker).to receive(:start!)
+      allow(QueryOwl::QueryTracker).to receive(:stop!).and_return([])
+      middleware.call(env)
+    end
+
+    it "skips tracking when path starts with an ignored prefix" do
+      QueryOwl.config.ignore_paths = ["/assets"]
+      asset_env = Rack::MockRequest.env_for("/assets/application.css")
+      expect(QueryOwl::QueryTracker).not_to receive(:start!)
+      middleware.call(asset_env)
+    end
+  end
+
+  context "ignore_controllers" do
+    before { QueryOwl.config.enabled = true }
+
+    let(:captured) { [] }
+
+    before do
+      QueryOwl.config.notifiers = [->(e) { captured << e }]
+      allow(QueryOwl::Detector).to receive(:detect_n_plus_one).and_return([])
+      allow(QueryOwl::Detector).to receive(:detect_slow_queries).and_return(
+        [{ type: :slow_query, sql: "SELECT 1", duration_ms: 200, backtrace: [] }]
+      )
+      allow(QueryOwl::Detector).to receive(:detect_unused_eager_loads).and_return([])
+      allow(QueryOwl::Logger).to receive(:log_summary)
+    end
+
+    it "suppresses event dispatch for an ignored controller" do
+      QueryOwl.config.ignore_controllers = ["rails/health"]
+      routed_env = Rack::MockRequest.env_for(
+        "/up",
+        "action_dispatch.request.path_parameters" => { controller: "rails/health", action: "show" }
+      )
+      middleware.call(routed_env)
+      expect(captured).to be_empty
+    end
+
+    it "still stops the trackers even when the controller is ignored" do
+      QueryOwl.config.ignore_controllers = ["rails/health"]
+      routed_env = Rack::MockRequest.env_for(
+        "/up",
+        "action_dispatch.request.path_parameters" => { controller: "rails/health", action: "show" }
+      )
+      expect(QueryOwl::QueryTracker).to receive(:start!).ordered
+      expect(QueryOwl::QueryTracker).to receive(:stop!).ordered.and_return([])
+      middleware.call(routed_env)
+    end
+
+    it "does not suppress events for a non-ignored controller" do
+      QueryOwl.config.ignore_controllers = ["rails/health"]
+      routed_env = Rack::MockRequest.env_for(
+        "/widgets",
+        "action_dispatch.request.path_parameters" => { controller: "widgets", action: "index" }
+      )
+      middleware.call(routed_env)
+      expect(captured).not_to be_empty
+    end
+  end
 end

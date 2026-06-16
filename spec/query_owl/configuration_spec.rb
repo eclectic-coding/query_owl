@@ -11,6 +11,8 @@ RSpec.describe QueryOwl::Configuration do
     it { expect(config.backtrace_filter).to respond_to(:call) }
     it { expect(config.raise_on_n_plus_one).to be(false) }
     it { expect(config.log_file).to be_nil }
+    it { expect(config.ignore_paths).to eq([]) }
+    it { expect(config.ignore_controllers).to eq([]) }
 
     it "defaults notifiers to [Notifiers::Logger]" do
       expect(config.notifiers.map(&:class)).to eq([QueryOwl::Notifiers::Logger])

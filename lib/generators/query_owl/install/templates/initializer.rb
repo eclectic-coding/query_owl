@@ -34,6 +34,13 @@ QueryOwl.configure do |config|
   # Disabled by default (nil). Useful for persistence across restarts.
   # config.log_file = Rails.root.join("log/query_owl.log").to_s
 
+  # Paths to skip entirely — accepts strings (prefix match) or regexes.
+  # Useful for health check endpoints and other high-frequency low-value paths.
+  # config.ignore_paths = ["/up", "/healthz", %r{^/assets/}]
+
+  # Controllers to skip — matched against the Rails controller name (e.g. "rails/health").
+  # config.ignore_controllers = ["rails/health", "admin/metrics"]
+
   # Notifiers receive each detected event via #call(event).
   # Defaults to [QueryOwl::Notifiers::Logger] which writes to Rails.logger.
   # Use Console for TTY-aware colorized output (yellow: N+1, red: slow query).
