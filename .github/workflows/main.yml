@@ -53,14 +53,19 @@ jobs:
       - run: bundle exec bundle-audit check
 
   test:
-    name: Ruby ${{ matrix.ruby }}
+    name: Ruby ${{ matrix.ruby }} / Rails ${{ matrix.rails }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         ruby: ["3.3", "3.4", "4.0"]
+        rails: ["8.1"]
+        include:
+          - rails: "8.1"
+            gemfile: gemfiles/rails_81.gemfile
     env:
       RAILS_ENV: test
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
 
     steps:
       - uses: actions/checkout@v6
@@ -73,7 +78,7 @@ jobs:
       - run: bundle exec rspec
 
       - name: Upload coverage to Codecov
-        if: matrix.ruby == '4.0'
+        if: matrix.ruby == '4.0' && matrix.rails == '8.1'
         uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

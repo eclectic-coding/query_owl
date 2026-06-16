@@ -4,6 +4,7 @@
 [![Gem Version](https://img.shields.io/gem/v/query_owl)](https://rubygems.org/gems/query_owl)
 [![Downloads](https://img.shields.io/gem/dt/query_owl)](https://rubygems.org/gems/query_owl)
 [![Ruby](https://img.shields.io/badge/ruby-%3E%3D%203.3-ruby)](https://www.ruby-lang.org)
+[![Rails](https://img.shields.io/badge/rails-%3E%3D%207.1-red)](https://rubyonrails.org)
 [![codecov](https://codecov.io/gh/eclectic-coding/query_owl/branch/main/graph/badge.svg)](https://codecov.io/gh/eclectic-coding/query_owl)
 
 A leaner alternative to Bullet. QueryOwl detects N+1 queries, slow queries, and unused eager loads in development, logging structured warnings to your Rails logger — without the noise.
@@ -58,6 +59,8 @@ rails generate query_owl:install
 ```
 
 The generator creates `config/initializers/query_owl.rb` with all options documented and commented out.
+
+**Compatibility:** Ruby >= 3.3, Rails >= 7.1. Tested against Rails 8.1 on Ruby 3.3, 3.4, and 4.0.
 
 [↑ Back to top](#table-of-contents)
 
