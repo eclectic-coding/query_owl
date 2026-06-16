@@ -1,7 +1,23 @@
+require "turbo-rails"
+require "importmap-rails"
+
 module QueryOwl
   class Engine < ::Rails::Engine
     isolate_namespace QueryOwl
     config.generators.api_only = true
+
+    initializer "query_owl.assets" do |app|
+      if app.config.respond_to?(:assets)
+        app.config.assets.paths << root.join("app/javascript")
+      end
+    end
+
+    initializer "query_owl.importmap", before: "importmap" do |app|
+      if app.config.respond_to?(:importmap)
+        app.config.importmap.paths << root.join("config/importmap.rb")
+        app.config.importmap.cache_sweepers << root.join("app/javascript")
+      end
+    end
 
     initializer "query_owl.subscribe" do
       ActiveSupport::Notifications.subscribe("sql.active_record") do |*args|

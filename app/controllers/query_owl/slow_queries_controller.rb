@@ -10,12 +10,16 @@ module QueryOwl
       filters = request.query_parameters
       events  = EventStore.all
       events  = events.select { |e| e[:type].to_s == filters["type"] }       if filters["type"].present?
-      events  = events.select { |e| e[:controller] == filters["controller"] } if filters["controller"].present?
+      events  = events.select { |e| e[:controller].to_s.include?(filters["controller"]) } if filters["controller"].present?
       events  = events.select { |e| e[:action] == filters["action"] }         if filters["action"].present?
 
       respond_to do |format|
         format.json { render json: events }
-        format.html { @events = events.reverse }
+        format.html do
+          @type_filter       = filters["type"].presence
+          @controller_filter = filters["controller"].presence
+          @events = events.reverse
+        end
       end
     end
 
