@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `QueryOwl.deprecator` — an `ActiveSupport::Deprecation` instance registered with `app.deprecators[:query_owl]` on boot; all 13 configuration options audited and confirmed stable for 1.0 (no removals or renames)
+- README expanded with full configuration reference table, Notifiers section, Ignoring Paths and Controllers section, Test Helper section, Rake Tasks section, and updated Dashboard section with filter/sort params
+- `CONTRIBUTING.md` added — setup instructions, test suite commands, commit conventions, PR process, and bug reporting guide
 
 ## [0.7.0] - 2026-06-16
 
