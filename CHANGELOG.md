@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `importmap-rails` and `turbo-rails` added as engine dependencies; Stimulus 3.2.2 and Turbo 8.0.23 loaded from CDN via engine-owned importmap pins — no host app JS setup required
+- Dashboard events table wrapped in `<turbo-frame id="qo-events">` so filter changes replace only the table, not the full page
+- Filter bar above the events table: type dropdown (All / N+1 / Slow Query / Unused Eager Load), controller text input, and a clear link when any filter is active
+- `table-filter` Stimulus controller auto-submits the filter form on select change or text input (300ms debounce), matching the `search` controller pattern from solid_stack_web
+
 ## [0.6.0] - 2026-06-16
 
 ### Added

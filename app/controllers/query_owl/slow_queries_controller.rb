@@ -15,7 +15,11 @@ module QueryOwl
 
       respond_to do |format|
         format.json { render json: events }
-        format.html { @events = events.reverse }
+        format.html do
+          @type_filter       = filters["type"].presence
+          @controller_filter = filters["controller"].presence
+          @events = events.reverse
+        end
       end
     end
 
