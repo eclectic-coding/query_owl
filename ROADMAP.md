@@ -2,7 +2,6 @@
 
 ## 0.4.1 — Resilience & Correctness
 
-- Dashboard: display `controller`, `action`, and `path` columns (data exists since 0.4.0 but the view doesn't render it)
 - Rescue notifier errors — a failing notifier should not crash the request or swallow the original response
 - `FileLogger` resilience — rescue on bad paths; `mkdir_p` for missing log directories
 - Use `Time.current` instead of `Time.now` in `EventStore` so `recorded_at` respects the app's configured timezone

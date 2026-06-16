@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Dashboard now displays `controller`, `action`, and `path` columns; SQL column capped at 320px with ellipsis so the wider table remains readable
+
 ## [0.4.0] - 2026-06-16
 
 ### Added
