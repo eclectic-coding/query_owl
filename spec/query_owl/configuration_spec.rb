@@ -12,6 +12,10 @@ RSpec.describe QueryOwl::Configuration do
     it { expect(config.raise_on_n_plus_one).to be(false) }
     it { expect(config.log_file).to be_nil }
 
+    it "defaults notifiers to [Notifiers::Logger]" do
+      expect(config.notifiers.map(&:class)).to eq([QueryOwl::Notifiers::Logger])
+    end
+
     it "enables in development" do
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("development"))
       expect(described_class.new.enabled).to be(true)

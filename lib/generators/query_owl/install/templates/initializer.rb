@@ -33,4 +33,9 @@ QueryOwl.configure do |config|
   # Append each detected event as a JSON line to this file path.
   # Disabled by default (nil). Useful for persistence across restarts.
   # config.log_file = Rails.root.join("log/query_owl.log").to_s
+
+  # Notifiers receive each detected event via #call(event).
+  # Defaults to [QueryOwl::Notifiers::Logger] which writes to Rails.logger.
+  # Add QueryOwl::Notifiers::Stdout for non-request contexts (jobs, Rake tasks).
+  # config.notifiers = [QueryOwl::Notifiers::Logger.new]
 end

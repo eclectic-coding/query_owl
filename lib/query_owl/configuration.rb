@@ -7,6 +7,14 @@ module QueryOwl
     attr_accessor :enabled, :slow_query_threshold_ms, :n_plus_one_threshold, :backtrace_lines,
                   :raise_on_n_plus_one, :event_store_size, :dashboard_enabled, :log_file
 
+    def notifiers
+      @notifiers ||= [Notifiers::Logger.new]
+    end
+
+    def notifiers=(arr)
+      @notifiers = arr
+    end
+
     def initialize
       @enabled                 = Rails.env.development?
       @slow_query_threshold_ms = 100
