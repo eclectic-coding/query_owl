@@ -41,6 +41,19 @@ QueryOwl.configure do |config|
   # Controllers to skip — matched against the Rails controller name (e.g. "rails/health").
   # config.ignore_controllers = ["rails/health", "admin/metrics"]
 
+  # Test helper — opt-in RSpec matchers and Minitest assertions.
+  # Add to spec/rails_helper.rb (or test/test_helper.rb for Minitest):
+  #
+  #   require "query_owl/test_helper"
+  #   RSpec.configure { |c| c.include QueryOwl::TestHelper }
+  #   # or: class ActiveSupport::TestCase; include QueryOwl::TestHelper; end
+  #
+  # Then use: expect { }.not_to trigger_n_plus_one
+  #           expect { }.not_to trigger_slow_query
+  #           expect { }.not_to trigger_unused_eager_load
+  #           assert_no_n_plus_one { }
+  #           assert_no_slow_query { }
+
   # Notifiers receive each detected event via #call(event).
   # Defaults to [QueryOwl::Notifiers::Logger] which writes to Rails.logger.
   # Use Console for TTY-aware colorized output (yellow: N+1, red: slow query).
