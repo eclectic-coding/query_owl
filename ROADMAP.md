@@ -1,5 +1,12 @@
 # ROADMAP
 
+## 0.7.0 — Dashboard Filtering & Sorting
+
+- Filter bar — type dropdown (All / N+1 / Slow Query / Unused Eager Load), controller input, and active-filter clear link; wires to the existing `?type=` / `?controller=` / `?action=` query params already supported by the JSON API
+- Sortable column headers — click Type, Info (duration/count), or Recorded At to toggle asc/desc; client-side sort with no extra server round-trip; default remains newest-first
+
+---
+
 ## 1.0.0 — Stable Public API
 
 - Locked public configuration interface with deprecation warnings for removed options
