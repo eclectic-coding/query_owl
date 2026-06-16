@@ -6,6 +6,7 @@
 [![Ruby](https://img.shields.io/badge/ruby-%3E%3D%203.3-ruby)](https://www.ruby-lang.org)
 [![Rails](https://img.shields.io/badge/rails-%3E%3D%207.1-red)](https://rubyonrails.org)
 [![codecov](https://codecov.io/gh/eclectic-coding/query_owl/branch/main/graph/badge.svg)](https://codecov.io/gh/eclectic-coding/query_owl)
+[![YARD Docs](https://img.shields.io/badge/docs-YARD-blue)](https://rubydoc.info/gems/query_owl)
 
 ![QueryOwl](assets/images/query_owl.png)
 
