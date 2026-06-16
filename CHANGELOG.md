@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dashboard events table wrapped in `<turbo-frame id="qo-events">` so filter changes replace only the table, not the full page
 - Filter bar above the events table: type dropdown (All / N+1 / Slow Query / Unused Eager Load), controller text input, and a clear link when any filter is active
 - `table-filter` Stimulus controller auto-submits the filter form on select change or text input (300ms debounce), matching the `search` controller pattern from solid_stack_web
+- Floating clear (✕) button in the controller search input — visible only when a filter value is present; wired via Stimulus targets and `clearController` action
+- Controller filter now matches partial names (substring) so `widg` matches the `widgets` controller
+- Sortable column headers on the dashboard: Type, Info, and Recorded At columns link to `?sort=column&direction=asc/desc`; sort state persists across filter changes via hidden form fields; active column shows ▲/▼ indicator and is highlighted; defaults to newest-first (`recorded_at desc`)
 
 ## [0.6.0] - 2026-06-16
 

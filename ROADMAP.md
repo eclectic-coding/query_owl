@@ -2,7 +2,8 @@
 
 ## 0.7.0 — Dashboard Filtering & Sorting
 
-- Sortable column headers — server-side sort via `?sort=column&direction=asc/desc`; sort links inside the turbo frame trigger partial re-renders; ▲/▼ indicator on active column; default newest-first
+- [x] Filter bar — type dropdown, controller text input, clear link, Turbo frame partial re-render, Stimulus `table-filter` controller with debounce; floating clear ✕ button; substring controller matching (#56)
+- [x] Sortable column headers — server-side sort via `?sort=column&direction=asc/desc`; sort links inside the turbo frame trigger partial re-renders; ▲/▼ indicator on active column; default newest-first (#57)
 
 ---
 
