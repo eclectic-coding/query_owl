@@ -2,8 +2,9 @@
 
 ## 0.7.0 — Dashboard Filtering & Sorting
 
-- Filter bar — type dropdown (All / N+1 / Slow Query / Unused Eager Load), controller input, and active-filter clear link; wires to the existing `?type=` / `?controller=` / `?action=` query params already supported by the JSON API
-- Sortable column headers — click Type, Info (duration/count), or Recorded At to toggle asc/desc; client-side sort with no extra server round-trip; default remains newest-first
+- Turbo frame wrapping the events table so only the table re-renders on filter or sort changes — no full page reload; adds `importmap-rails`, `turbo-rails`, and `stimulus-rails` as engine dependencies following the same pattern as solid_stack_web
+- Filter bar — type dropdown, controller input, clear link; Stimulus `table-filter` controller auto-submits the form on change; filter form targets the turbo frame
+- Sortable column headers — server-side sort via `?sort=column&direction=asc/desc`; sort links inside the turbo frame trigger partial re-renders; ▲/▼ indicator on active column; default newest-first
 
 ---
 
