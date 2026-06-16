@@ -73,6 +73,12 @@ RSpec.describe QueryOwl::SlowQueriesController, type: :request do
         expect(response.body).to include('value="widgets"')
       end
 
+      it "matches on a partial controller name (substring)" do
+        get "/query_owl/slow_queries", params: { controller: "widg" }, headers: { "Accept" => "text/html" }
+        expect(response.body).to include("widgets")
+        expect(response.body).not_to include("posts")
+      end
+
       it "renders the clear X button without hidden when a controller filter is set" do
         get "/query_owl/slow_queries", params: { controller: "widgets" }, headers: { "Accept" => "text/html" }
         expect(response.body).to include("qo-input-clear")
