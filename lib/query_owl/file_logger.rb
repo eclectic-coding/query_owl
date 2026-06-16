@@ -1,4 +1,5 @@
 require "json"
+require "fileutils"
 
 module QueryOwl
   class FileLogger
@@ -9,9 +10,12 @@ module QueryOwl
         path = QueryOwl.config.log_file
         return unless path
 
+        FileUtils.mkdir_p(File.dirname(path))
         File.open(path, "a") do |f|
           events.each { |e| f.puts(JSON.generate(serializable(e))) }
         end
+      rescue => e
+        Rails.logger.error "[QueryOwl] FileLogger failed: #{e.message}"
       end
 
       private

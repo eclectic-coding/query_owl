@@ -55,5 +55,25 @@ RSpec.describe QueryOwl::FileLogger do
       lines = File.readlines(log_path)
       expect(lines.size).to eq(2)
     end
+
+    it "creates missing parent directories automatically" do
+      nested_path = File.join(Dir.tmpdir, "query_owl_test_#{SecureRandom.hex(6)}", "nested", "query_owl.log")
+      QueryOwl.configure { |c| c.log_file = nested_path }
+
+      described_class.append([{ type: :slow_query, sql: "SELECT 1", duration_ms: 100 }])
+
+      expect(File.exist?(nested_path)).to be(true)
+    ensure
+      FileUtils.rm_rf(File.dirname(File.dirname(nested_path)))
+    end
+
+    it "rescues file errors and logs them without raising" do
+      QueryOwl.configure { |c| c.log_file = "/proc/query_owl_no_permission.log" }
+      allow(Rails.logger).to receive(:error)
+
+      expect { described_class.append([{ type: :slow_query, sql: "SELECT 1", duration_ms: 100 }]) }
+        .not_to raise_error
+      expect(Rails.logger).to have_received(:error).with(/FileLogger failed/)
+    end
   end
 end
