@@ -5,6 +5,9 @@
 <form class="qo-filters" action="<%= slow_queries_path %>" method="get"
       data-controller="table-filter"
       data-turbo-frame="qo-events">
+  <input type="hidden" name="sort" value="<%= @sort %>">
+  <input type="hidden" name="direction" value="<%= @direction %>">
+
   <label for="qo-type-filter">Type</label>
   <select id="qo-type-filter" name="type" class="qo-select"
           data-action="change->table-filter#select">
@@ -43,11 +46,11 @@
     <table class="qo-table">
       <thead>
         <tr>
-          <th>Type</th>
+          <%= sort_th("Type", "type", @sort, @direction) %>
           <th>SQL / Details</th>
-          <th>Info</th>
+          <%= sort_th("Info", "info", @sort, @direction) %>
           <th>Request</th>
-          <th>Recorded At</th>
+          <%= sort_th("Recorded At", "recorded_at", @sort, @direction) %>
           <th>Backtrace</th>
         </tr>
       </thead>

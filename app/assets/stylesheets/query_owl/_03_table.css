@@ -32,3 +32,12 @@
 
 .qo-request  { white-space: nowrap; }
 .qo-path     { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 11px; opacity: .7; }
+
+.qo-sort-link {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+}
+.qo-sort-link:hover { color: var(--accent, #4f46e5); }
+
+.qo-sort-active { color: var(--accent, #4f46e5); }

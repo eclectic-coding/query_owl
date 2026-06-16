@@ -1,11 +1,5 @@
 # ROADMAP
 
-## 0.7.0 — Dashboard Filtering & Sorting
-
-- Sortable column headers — server-side sort via `?sort=column&direction=asc/desc`; sort links inside the turbo frame trigger partial re-renders; ▲/▼ indicator on active column; default newest-first
-
----
-
 ## 1.0.0 — Stable Public API
 
 - Locked public configuration interface with deprecation warnings for removed options
