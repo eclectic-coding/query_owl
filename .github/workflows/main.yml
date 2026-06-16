@@ -74,6 +74,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
+          bundle-gemfile: ${{ matrix.gemfile }}
 
       - run: bundle exec rspec
 
