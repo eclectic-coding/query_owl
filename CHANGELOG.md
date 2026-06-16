@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-06-16
+
 ### Added
 - `query_owl:clear` Rake task — drains the in-memory `EventStore` ring buffer and prints a confirmation line with the number of events removed; useful after a deploy or investigation without restarting the server
 - `config.ignore_paths` — array of path prefix strings or regexes; requests whose `PATH_INFO` matches any entry are skipped entirely in the middleware (no tracking, no events, no notifiers)
@@ -58,7 +60,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Slow query detector — flags individual queries whose duration meets or exceeds `slow_query_threshold_ms` (default: 100ms)
 - Structured logger — emits `[QueryOwl] {JSON}` warning lines via `Rails.logger` at the configured log level; `QueryOwl::Middleware` wires tracker → detector → logger on every request
 
-[Unreleased]: https://github.com/eclectic-coding/query_owl/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/eclectic-coding/query_owl/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.5.0
 [0.4.1]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.4.1
 [0.4.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.4.0
 [0.3.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.3.0
