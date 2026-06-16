@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `QueryOwl.deprecator` — an `ActiveSupport::Deprecation` instance registered with `app.deprecators[:query_owl]` on boot; all 13 configuration options audited and confirmed stable for 1.0 (no removals or renames)
+
 ## [0.7.0] - 2026-06-16
 
 ### Added
