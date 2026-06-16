@@ -2,7 +2,6 @@
 
 ## 0.5.0 — Developer Experience
 
-- Ignore list — `config.ignore_controllers` and `config.ignore_paths` arrays to suppress tracking for health checks, admin endpoints, etc.
 - `query_owl:clear` Rake task — drain the in-memory `EventStore` from the console or a deploy script
 
 ---
