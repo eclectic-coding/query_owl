@@ -1,10 +1,17 @@
 module QueryOwl
   module Notifiers
+    # Writes colorized, human-readable events to +$stdout+.
+    # Color is applied only when +$stdout+ is a TTY.
+    #
+    # @example
+    #   config.notifiers = [QueryOwl::Notifiers::Console.new]
     class Console
       YELLOW = "\e[33m"
       RED    = "\e[31m"
       RESET  = "\e[0m"
 
+      # @param event [Hash] detected event (must include +:type+ and relevant fields)
+      # @return [void]
       def call(event)
         line = format(event)
         line = apply_color(event[:type], line) if $stdout.tty?
