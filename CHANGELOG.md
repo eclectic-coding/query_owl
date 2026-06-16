@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-06-16
+
 ### Fixed
 - `config.notifiers=` now validates every item at assignment time and raises `ArgumentError` if any does not respond to `#call`, surfacing misconfiguration immediately rather than producing a `NoMethodError` mid-request
 - Dashboard now displays `controller`, `action`, and `path` columns; SQL column capped at 320px with ellipsis so the wider table remains readable
@@ -50,7 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Slow query detector — flags individual queries whose duration meets or exceeds `slow_query_threshold_ms` (default: 100ms)
 - Structured logger — emits `[QueryOwl] {JSON}` warning lines via `Rails.logger` at the configured log level; `QueryOwl::Middleware` wires tracker → detector → logger on every request
 
-[Unreleased]: https://github.com/eclectic-coding/query_owl/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/eclectic-coding/query_owl/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.4.1
 [0.4.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.4.0
 [0.3.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.3.0
 [0.2.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.2.0
