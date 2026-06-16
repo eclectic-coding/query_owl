@@ -2,7 +2,6 @@
 
 ## 0.4.1 — Resilience & Correctness
 
-- `FileLogger` resilience — rescue on bad paths; `mkdir_p` for missing log directories
 - Use `Time.current` instead of `Time.now` in `EventStore` so `recorded_at` respects the app's configured timezone
 - Validate `config.notifiers=` setter — raise `ArgumentError` if any item does not respond to `#call`
 
