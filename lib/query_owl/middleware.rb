@@ -28,7 +28,13 @@ module QueryOwl
                     Detector.detect_slow_queries(queries) +
                     Detector.detect_unused_eager_loads(eager_data))
                    .map { |e| e.merge(context) }
-      events.each { |event| QueryOwl.config.notifiers.each { |notifier| notifier.call(event) } }
+      events.each do |event|
+        QueryOwl.config.notifiers.each do |notifier|
+          notifier.call(event)
+        rescue => e
+          Rails.logger.error "[QueryOwl] Notifier #{notifier.class} raised: #{e.message}"
+        end
+      end
       Logger.log_summary(events)
       events.each { |e| EventStore.push(e) }
       FileLogger.append(events)
