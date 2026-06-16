@@ -1,11 +1,5 @@
 # ROADMAP
 
-## 0.5.0 — Developer Experience
-
-- `query_owl:clear` Rake task — drain the in-memory `EventStore` from the console or a deploy script
-
----
-
 ## 0.6.0 — Test Support
 
 - `QueryOwl::TestHelper` — opt-in module providing RSpec matchers and Minitest assertions (e.g. `expect { }.not_to trigger_n_plus_one`) for use in integration test suites
