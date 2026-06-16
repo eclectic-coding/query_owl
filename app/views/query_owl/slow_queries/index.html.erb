@@ -12,6 +12,7 @@
         <th>Type</th>
         <th>SQL / Details</th>
         <th>Info</th>
+        <th>Request</th>
         <th>Recorded At</th>
         <th>Backtrace</th>
       </tr>
@@ -24,6 +25,14 @@
           <td class="qo-muted">
             <% if event[:count] %>count: <%= event[:count] %><% end %>
             <% if event[:duration_ms] %><%= event[:duration_ms] %>ms<% end %>
+          </td>
+          <td class="qo-request qo-muted">
+            <% if event[:controller] || event[:action] %>
+              <span class="qo-monospace"><%= [event[:controller], event[:action]].compact.join("#") %></span>
+            <% end %>
+            <% if event[:path] %>
+              <br><span class="qo-path"><%= event[:path] %></span>
+            <% end %>
           </td>
           <td class="qo-muted"><%= event[:recorded_at]&.strftime("%H:%M:%S") %></td>
           <td class="qo-monospace qo-muted"><%= Array(event[:backtrace]).first %></td>
