@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- `config.notifiers=` now validates every item at assignment time and raises `ArgumentError` if any does not respond to `#call`, surfacing misconfiguration immediately rather than producing a `NoMethodError` mid-request
 - Dashboard now displays `controller`, `action`, and `path` columns; SQL column capped at 320px with ellipsis so the wider table remains readable
 - Notifier errors are now rescued and logged via `Rails.logger.error` — a failing notifier can no longer crash the request or replace an already-propagating exception; remaining notifiers in the array still run
 - `FileLogger` now creates missing parent directories via `FileUtils.mkdir_p` and rescues IO/permission errors with `Rails.logger.error` so a bad `log_file` path can never break the request

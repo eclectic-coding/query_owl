@@ -40,6 +40,35 @@ RSpec.describe QueryOwl::Configuration do
     end
   end
 
+  describe "#notifiers=" do
+    it "accepts an array of callables" do
+      notifier = ->(event) { event }
+      expect { config.notifiers = [notifier] }.not_to raise_error
+      expect(config.notifiers).to eq([notifier])
+    end
+
+    it "accepts built-in notifier instances" do
+      expect { config.notifiers = [QueryOwl::Notifiers::Logger.new, QueryOwl::Notifiers::Console.new] }
+        .not_to raise_error
+    end
+
+    it "raises when any item does not respond to #call" do
+      expect { config.notifiers = ["not callable"] }
+        .to raise_error(ArgumentError, /notifiers must respond to #call/)
+    end
+
+    it "includes the offending class in the error message" do
+      expect { config.notifiers = [42] }
+        .to raise_error(ArgumentError, /Integer does not/)
+    end
+
+    it "raises if any item is non-callable even when others are valid" do
+      callable = ->(event) { event }
+      expect { config.notifiers = [callable, "bad"] }
+        .to raise_error(ArgumentError, /notifiers must respond to #call/)
+    end
+  end
+
   describe "#backtrace_filter=" do
     it "accepts a callable" do
       filter = ->(line) { line.start_with?("app/") }
