@@ -7,6 +7,8 @@
 [![Rails](https://img.shields.io/badge/rails-%3E%3D%207.1-red)](https://rubyonrails.org)
 [![codecov](https://codecov.io/gh/eclectic-coding/query_owl/branch/main/graph/badge.svg)](https://codecov.io/gh/eclectic-coding/query_owl)
 
+![QueryOwl](assets/images/query_owl.png)
+
 A leaner alternative to Bullet. QueryOwl detects N+1 queries, slow queries, and unused eager loads in development, logging structured warnings to your Rails logger — without the noise.
 
 ## Table of Contents
