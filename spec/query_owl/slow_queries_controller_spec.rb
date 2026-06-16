@@ -105,6 +105,86 @@ RSpec.describe QueryOwl::SlowQueriesController, type: :request do
     end
   end
 
+  describe "GET /slow_queries sorting (HTML)" do
+    let(:older_event) do
+      { type: :slow_query, sql: "SELECT 1", duration_ms: 50, controller: "alpha", action: "index",
+        path: "/alpha", backtrace: [], recorded_at: 1.hour.ago }
+    end
+    let(:newer_event) do
+      { type: :n_plus_one, sql: "SELECT * FROM tags", count: 5, controller: "beta", action: "show",
+        path: "/beta", backtrace: [], recorded_at: Time.current }
+    end
+
+    before do
+      QueryOwl::EventStore.clear
+      [older_event, newer_event].each { |e| QueryOwl::EventStore.push(e) }
+    end
+
+    it "defaults to recorded_at desc (newest first)" do
+      get "/query_owl/slow_queries", headers: { "Accept" => "text/html" }
+      body = response.body
+      expect(body.index("beta")).to be < body.index("alpha")
+    end
+
+    it "sorts by recorded_at asc (oldest first)" do
+      get "/query_owl/slow_queries", params: { sort: "recorded_at", direction: "asc" }, headers: { "Accept" => "text/html" }
+      body = response.body
+      expect(body.index("alpha")).to be < body.index("beta")
+    end
+
+    it "sorts by type asc" do
+      get "/query_owl/slow_queries", params: { sort: "type", direction: "asc" }, headers: { "Accept" => "text/html" }
+      body = response.body
+      expect(body.index("n plus one")).to be < body.index("slow query")
+    end
+
+    it "sorts by type desc" do
+      get "/query_owl/slow_queries", params: { sort: "type", direction: "desc" }, headers: { "Accept" => "text/html" }
+      body = response.body
+      expect(body.index("slow query")).to be < body.index("n plus one")
+    end
+
+    it "sorts by info (duration_ms/count) asc" do
+      # older_event has duration_ms: 50 → numeric 50; newer_event has count: 5 → numeric 5
+      # asc: 5 < 50, so newer_event (count: 5) appears first
+      get "/query_owl/slow_queries", params: { sort: "info", direction: "asc" }, headers: { "Accept" => "text/html" }
+      body = response.body
+      expect(body.index("count: 5")).to be < body.index("50ms")
+    end
+
+    it "sorts by info desc" do
+      get "/query_owl/slow_queries", params: { sort: "info", direction: "desc" }, headers: { "Accept" => "text/html" }
+      body = response.body
+      expect(body.index("50ms")).to be < body.index("count: 5")
+    end
+
+    it "ignores unknown sort column and falls back to recorded_at desc" do
+      get "/query_owl/slow_queries", params: { sort: "malicious" }, headers: { "Accept" => "text/html" }
+      body = response.body
+      expect(body.index("beta")).to be < body.index("alpha")
+    end
+
+    it "renders sort links in the table header" do
+      get "/query_owl/slow_queries", headers: { "Accept" => "text/html" }
+      expect(response.body).to include("qo-sort-link")
+    end
+
+    it "marks the active sort column with qo-sort-active" do
+      get "/query_owl/slow_queries", params: { sort: "type", direction: "asc" }, headers: { "Accept" => "text/html" }
+      expect(response.body).to include("qo-sort-active")
+    end
+
+    it "shows the ▼ indicator for the active desc column" do
+      get "/query_owl/slow_queries", params: { sort: "recorded_at", direction: "desc" }, headers: { "Accept" => "text/html" }
+      expect(response.body).to include("▼")
+    end
+
+    it "shows the ▲ indicator for the active asc column" do
+      get "/query_owl/slow_queries", params: { sort: "recorded_at", direction: "asc" }, headers: { "Accept" => "text/html" }
+      expect(response.body).to include("▲")
+    end
+  end
+
   describe "GET /slow_queries (JSON)" do
     it "still returns JSON when requested" do
       get "/query_owl/slow_queries", headers: { "Accept" => "application/json" }
