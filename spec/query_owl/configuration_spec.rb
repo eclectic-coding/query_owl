@@ -104,6 +104,20 @@ end
 RSpec.describe QueryOwl do
   after { described_class.reset_config! }
 
+  describe ".deprecator" do
+    it "returns an ActiveSupport::Deprecation instance" do
+      expect(described_class.deprecator).to be_a(ActiveSupport::Deprecation)
+    end
+
+    it "returns the same instance on repeated calls" do
+      expect(described_class.deprecator).to be(described_class.deprecator)
+    end
+
+    it "is registered with the Rails app deprecators" do
+      expect(Rails.application.deprecators[:query_owl]).to be(described_class.deprecator)
+    end
+  end
+
   describe ".configure" do
     it "yields the config object" do
       described_class.configure do |c|

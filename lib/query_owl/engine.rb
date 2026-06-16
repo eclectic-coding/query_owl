@@ -19,6 +19,10 @@ module QueryOwl
       end
     end
 
+    initializer "query_owl.deprecator" do |app|
+      app.deprecators[:query_owl] = QueryOwl.deprecator
+    end
+
     initializer "query_owl.subscribe" do
       ActiveSupport::Notifications.subscribe("sql.active_record") do |*args|
         next unless QueryOwl.config.enabled
