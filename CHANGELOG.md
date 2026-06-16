@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-06-16
+
 ### Added
 - `importmap-rails` and `turbo-rails` added as engine dependencies; Stimulus 3.2.2 and Turbo 8.0.23 loaded from CDN via engine-owned importmap pins — no host app JS setup required
 - Dashboard events table wrapped in `<turbo-frame id="qo-events">` so filter changes replace only the table, not the full page
@@ -78,7 +80,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Slow query detector — flags individual queries whose duration meets or exceeds `slow_query_threshold_ms` (default: 100ms)
 - Structured logger — emits `[QueryOwl] {JSON}` warning lines via `Rails.logger` at the configured log level; `QueryOwl::Middleware` wires tracker → detector → logger on every request
 
-[Unreleased]: https://github.com/eclectic-coding/query_owl/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/eclectic-coding/query_owl/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.7.0
 [0.6.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.6.0
 [0.5.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.5.0
 [0.4.1]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.4.1
