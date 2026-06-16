@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `log_file` config option — when set to a file path, appends one JSON line per detected event to that file on every request; disabled by default (`nil`); useful for persisting events across server restarts
 - Request context on every event — each detected event now includes `controller`, `action`, and `path` keys populated from the Rack env after routing; all consumers (logger, event store, file logger) receive the enriched hash automatically
 - Custom notifier API — `config.notifiers` accepts an array of any objects responding to `#call(event)`; built-in `QueryOwl::Notifiers::Logger` (default, writes to `Rails.logger`) and `QueryOwl::Notifiers::Stdout` (writes to `$stdout`, useful for background jobs and Rake tasks)
+- `QueryOwl::Notifiers::Console` — TTY-aware colorized notifier; writes directly to `$stdout` with yellow for N+1s and red for slow queries; falls back to plain output when not a TTY (piped output, CI)
 
 ## [0.3.0] - 2026-06-15
 
