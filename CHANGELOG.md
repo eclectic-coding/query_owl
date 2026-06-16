@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Dashboard now displays `controller`, `action`, and `path` columns; SQL column capped at 320px with ellipsis so the wider table remains readable
+- Notifier errors are now rescued and logged via `Rails.logger.error` — a failing notifier can no longer crash the request or replace an already-propagating exception; remaining notifiers in the array still run
 
 ## [0.4.0] - 2026-06-16
 
