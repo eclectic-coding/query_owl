@@ -1,11 +1,5 @@
 # ROADMAP
 
-## 0.4.1 — Resilience & Correctness
-
-- Validate `config.notifiers=` setter — raise `ArgumentError` if any item does not respond to `#call`
-
----
-
 ## 0.5.0 — Developer Experience
 
 - Ignore list — `config.ignore_controllers` and `config.ignore_paths` arrays to suppress tracking for health checks, admin endpoints, etc.

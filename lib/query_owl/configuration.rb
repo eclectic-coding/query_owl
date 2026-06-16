@@ -12,6 +12,11 @@ module QueryOwl
     end
 
     def notifiers=(arr)
+      arr.each do |notifier|
+        unless notifier.respond_to?(:call)
+          raise ArgumentError, "notifiers must respond to #call (#{notifier.class} does not)"
+        end
+      end
       @notifiers = arr
     end
 
