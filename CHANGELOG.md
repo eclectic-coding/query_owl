@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `QueryOwl::TestHelper` — opt-in module for RSpec and Minitest; `require "query_owl/test_helper"` then `include QueryOwl::TestHelper` in your test setup
+  - RSpec block matchers: `expect { }.not_to trigger_n_plus_one`, `trigger_slow_query`, `trigger_unused_eager_load`
+  - Minitest assertions: `assert_no_n_plus_one { }`, `assert_no_slow_query { }`
+  - Each helper runs its block with trackers active, isolated from `config.enabled` and `config.raise_on_n_plus_one`
+- Opt-in setup instructions added to the install generator template
+
 ## [0.5.0] - 2026-06-16
 
 ### Added

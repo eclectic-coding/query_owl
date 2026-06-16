@@ -1,11 +1,5 @@
 # ROADMAP
 
-## 0.6.0 — Test Support
-
-- `QueryOwl::TestHelper` — opt-in module providing RSpec matchers and Minitest assertions (e.g. `expect { }.not_to trigger_n_plus_one`) for use in integration test suites
-
----
-
 ## 1.0.0 — Stable Public API
 
 - Locked public configuration interface with deprecation warnings for removed options
