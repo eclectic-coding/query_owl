@@ -31,6 +31,29 @@
 
 .qo-input { min-width: 160px; }
 
+.qo-input-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.qo-input-wrapper .qo-input { padding-right: 1.6rem; }
+
+.qo-input-clear {
+  position: absolute;
+  right: 0.4rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1;
+  padding: 0.15rem 0.2rem;
+  border-radius: 2px;
+}
+
+.qo-input-clear:hover { color: var(--text); background: var(--border); }
+
 .qo-select:focus,
 .qo-input:focus {
   outline: none;

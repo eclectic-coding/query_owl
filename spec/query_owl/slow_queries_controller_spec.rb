@@ -72,6 +72,17 @@ RSpec.describe QueryOwl::SlowQueriesController, type: :request do
         get "/query_owl/slow_queries", params: { controller: "widgets" }, headers: { "Accept" => "text/html" }
         expect(response.body).to include('value="widgets"')
       end
+
+      it "renders the clear X button without hidden when a controller filter is set" do
+        get "/query_owl/slow_queries", params: { controller: "widgets" }, headers: { "Accept" => "text/html" }
+        expect(response.body).to include("qo-input-clear")
+        expect(response.body).not_to match(/clearController"[\s\S]*?hidden>/)
+      end
+
+      it "renders the clear X button as hidden when no controller filter is set" do
+        get "/query_owl/slow_queries", headers: { "Accept" => "text/html" }
+        expect(response.body).to match(/clearController"[\s\S]*?hidden>/)
+      end
     end
 
     context "with no matching events" do

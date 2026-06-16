@@ -15,10 +15,17 @@
   </select>
 
   <label for="qo-controller-filter">Controller</label>
-  <input id="qo-controller-filter" type="text" name="controller" class="qo-input"
-         placeholder="e.g. widgets"
-         value="<%= @controller_filter %>"
-         data-action="input->table-filter#filter">
+  <div class="qo-input-wrapper">
+    <input id="qo-controller-filter" type="text" name="controller" class="qo-input"
+           placeholder="e.g. widgets"
+           value="<%= @controller_filter %>"
+           data-table-filter-target="controllerInput"
+           data-action="input->table-filter#filter">
+    <button type="button" class="qo-input-clear" aria-label="Clear controller filter"
+            data-table-filter-target="clearButton"
+            data-action="click->table-filter#clearController"
+            <%= "hidden" if @controller_filter.blank? %>>✕</button>
+  </div>
 
   <% if @type_filter.present? || @controller_filter.present? %>
     <%= link_to "Clear", slow_queries_path, class: "qo-btn qo-btn--muted" %>
