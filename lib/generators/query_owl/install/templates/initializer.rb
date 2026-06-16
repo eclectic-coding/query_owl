@@ -36,6 +36,7 @@ QueryOwl.configure do |config|
 
   # Notifiers receive each detected event via #call(event).
   # Defaults to [QueryOwl::Notifiers::Logger] which writes to Rails.logger.
-  # Add QueryOwl::Notifiers::Stdout for non-request contexts (jobs, Rake tasks).
-  # config.notifiers = [QueryOwl::Notifiers::Logger.new]
+  # Use Console for TTY-aware colorized output (yellow: N+1, red: slow query).
+  # Use Stdout for non-request contexts (jobs, Rake tasks).
+  # config.notifiers = [QueryOwl::Notifiers::Console.new]
 end

@@ -1,11 +1,5 @@
 # ROADMAP
 
-## 0.4.0 — Persistence & Notifications
-
-- Built-in `QueryOwl::Notifiers::Console` — TTY-aware colorized output written directly to `$stdout`, keeping `Rails.logger` / log files free of ANSI escape codes
-
----
-
 ## 1.0.0 — Stable Public API
 
 - Locked public configuration interface with deprecation warnings for removed options

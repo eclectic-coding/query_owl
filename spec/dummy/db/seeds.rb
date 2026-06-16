@@ -13,35 +13,47 @@ end
 
 puts "Seeded #{Widget.count} widgets and #{Tag.count} tags."
 
-# Seed the EventStore with representative events for dashboard testing.
+# Seed the EventStore with representative events (including request context).
 QueryOwl::EventStore.clear
 
 QueryOwl::EventStore.push(
-  type: :n_plus_one,
-  sql: "SELECT * FROM tags WHERE widget_id = ?",
-  count: 5,
-  backtrace: ["app/controllers/widgets_controller.rb:12"]
+  type:       :n_plus_one,
+  sql:        "SELECT * FROM tags WHERE widget_id = ?",
+  count:      5,
+  backtrace:  [ "app/controllers/widgets_controller.rb:12" ],
+  controller: "widgets",
+  action:     "index",
+  path:       "/widgets"
 )
 
 QueryOwl::EventStore.push(
-  type: :slow_query,
-  sql: "SELECT * FROM widgets WHERE name LIKE ?",
+  type:        :slow_query,
+  sql:         "SELECT * FROM widgets WHERE name LIKE ?",
   duration_ms: 312.4,
-  backtrace: ["app/models/widget.rb:8"]
+  backtrace:   [ "app/models/widget.rb:8" ],
+  controller:  "widgets",
+  action:      "index",
+  path:        "/widgets"
 )
 
 QueryOwl::EventStore.push(
-  type: :unused_eager_load,
-  model: "Widget",
+  type:        :unused_eager_load,
+  model:       "Widget",
   association: "tags",
-  backtrace: ["app/controllers/widgets_controller.rb:7"]
+  backtrace:   [ "app/controllers/widgets_controller.rb:7" ],
+  controller:  "widgets",
+  action:      "unused",
+  path:        "/widgets/unused"
 )
 
 QueryOwl::EventStore.push(
-  type: :n_plus_one,
-  sql: "SELECT * FROM widgets WHERE id = ?",
-  count: 3,
-  backtrace: ["app/views/widgets/index.html.erb:5"]
+  type:       :n_plus_one,
+  sql:        "SELECT * FROM widgets WHERE id = ?",
+  count:      3,
+  backtrace:  [ "app/views/widgets/index.html.erb:5" ],
+  controller: "widgets",
+  action:     "show",
+  path:       "/widgets/1"
 )
 
 puts "Seeded #{QueryOwl::EventStore.size} events into EventStore."
