@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-06-16
+
 ### Added
 - `rails generate query_owl:install` — generates a `config/initializers/query_owl.rb` with all nine configuration options documented and commented out by default
 - `log_file` config option — when set to a file path, appends one JSON line per detected event to that file on every request; disabled by default (`nil`); useful for persisting events across server restarts
@@ -41,7 +43,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Slow query detector — flags individual queries whose duration meets or exceeds `slow_query_threshold_ms` (default: 100ms)
 - Structured logger — emits `[QueryOwl] {JSON}` warning lines via `Rails.logger` at the configured log level; `QueryOwl::Middleware` wires tracker → detector → logger on every request
 
-[Unreleased]: https://github.com/eclectic-coding/query_owl/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/eclectic-coding/query_owl/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.4.0
 [0.3.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.3.0
 [0.2.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.2.0
 [0.1.0]: https://github.com/eclectic-coding/query_owl/releases/tag/v0.1.0
