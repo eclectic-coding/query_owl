@@ -17,7 +17,7 @@ Thank you for your interest in contributing! This document covers how to set up 
    bundle exec rake
    ```
 
-   The default task runs lint → security audit → Brakeman → specs.
+   The default task runs lint → security audit (including `gemfiles/` lockfiles) → Brakeman → specs.
 
 4. Enable the pre-push hook (also done by `bin/setup`):
 
