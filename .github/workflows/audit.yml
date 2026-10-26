@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -24,7 +24,7 @@ jobs:
           bundler-cache: true
 
       - name: Run bundler-audit
-        run: bundle exec rake bundle:audit:update bundle:audit:check
+        run: bundle exec rake bundle:audit:update bundle:audit:check bundle:audit:gemfiles
 
       - name: Run Brakeman
         run: bundle exec rake brakeman
