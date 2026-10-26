@@ -16,6 +16,9 @@ gem "rubocop-rails-omakase", require: false
 # gem "debug", ">= 1.0.0"
 gem "bundler-audit"
 
+# Static security analysis for the engine [https://brakemanscanner.org/]
+gem "brakeman", require: false
+
 group :test do
   gem "rspec-rails"
   gem "simplecov", require: false
