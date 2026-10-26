@@ -17,7 +17,14 @@ task :brakeman do
   sh "bundle exec brakeman -q --no-pager --force-scan --skip-files spec/dummy/ -p . -i config/brakeman.ignore"
 end
 
-task default: [:lint, :'bundle:audit:update', 'bundle:audit:check', :brakeman, :spec]
+desc "Audit the Appraisal-style gemfiles/ lockfiles"
+task :"bundle:audit:gemfiles" do
+  Dir["gemfiles/*.gemfile.lock"].sort.each do |lockfile|
+    sh "bundle exec bundle-audit check --gemfile-lock #{lockfile}"
+  end
+end
+
+task default: [:lint, :'bundle:audit:update', 'bundle:audit:check', :'bundle:audit:gemfiles', :brakeman, :spec]
 
 desc "Run performance benchmarks"
 task :benchmark do
