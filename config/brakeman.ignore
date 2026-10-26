@@ -1,0 +1,27 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Cross-Site Request Forgery",
+      "warning_code": 86,
+      "fingerprint": "a18d29fbe0058eecd90c4f33e827c99d237f5f828c7f694ab7062e322b40993f",
+      "check_name": "ForgerySetting",
+      "message": "`protect_from_forgery` should be configured with `with: :exception`",
+      "file": "app/controllers/query_owl/slow_queries_controller.rb",
+      "line": 3,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross-site_request_forgery/",
+      "code": "protect_from_forgery(:with => :null_session)",
+      "render_path": null,
+      "location": {
+        "type": "controller",
+        "controller": "QueryOwl::SlowQueriesController"
+      },
+      "user_input": null,
+      "confidence": "Medium",
+      "cwe_id": [
+        352
+      ],
+      "note": "Intentional: the controller only serves read-only GET requests; null_session avoids raising on external API/JSON clients."
+    }
+  ],
+  "brakeman_version": "8.1.0"
+}

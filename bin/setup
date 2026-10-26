@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+bundle install
+
+# Run the full check suite (lint, audit, brakeman, specs) before every push.
+git config core.hooksPath .githooks

@@ -17,7 +17,15 @@ Thank you for your interest in contributing! This document covers how to set up 
    bundle exec rake
    ```
 
-   The default task runs lint → security audit → specs.
+   The default task runs lint → security audit → Brakeman → specs.
+
+4. Enable the pre-push hook (also done by `bin/setup`):
+
+   ```sh
+   git config core.hooksPath .githooks
+   ```
+
+   It runs `bundle exec rake` before every push. Bypass in an emergency with `git push --no-verify`.
 
 ## Running tests
 
