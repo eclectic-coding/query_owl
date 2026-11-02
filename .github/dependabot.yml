@@ -3,7 +3,14 @@ updates:
   - package-ecosystem: bundler
     directory: "/"
     schedule:
-      interval: weekly
+      interval: daily
+    # Include transitive gems (loofah, nokogiri, rack, ...) so advisories
+    # in indirect dependencies get a PR before the weekly audit trips.
+    allow:
+      - dependency-type: all
+    groups:
+      bundler-minor-patch:
+        update-types: ["minor", "patch"]
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
